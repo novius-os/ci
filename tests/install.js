@@ -46,4 +46,6 @@ casper.then(function appManager() {
     }));
 });
 
-casper.run();
+casper.run(function() {
+    this.test.done();
+});
