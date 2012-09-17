@@ -7,9 +7,9 @@ casper.then(function step() {
 	this.test.assertTextExists('Configuring the MySQL database', 'Step 2 loaded');
     this.fill('form', {
 		hostname: 'localhost',
-		username: 'novius-os',
+		username: 'novius_os',
 		password: 'novius-os',
-		database: 'novius-os'
+		database: 'novius_os'
 	}, true);
 });
 
