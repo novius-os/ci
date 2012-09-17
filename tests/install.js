@@ -6,10 +6,10 @@ casper.start('http://novius-os-test.gilles.lyon.novius.fr/install.php', function
 casper.then(function step() {
 	this.test.assertTextExists('Configuring the MySQL database', 'Step 2 loaded');
     this.fill('form', {
-		hostname: 'lnx3.lyon.novius.fr',
-		username: 'cms_base',
-		password: 'publinova',
-		database: 'nos_gilles_noviusos_test'
+		hostname: 'localhost',
+		username: 'novius-os',
+		password: 'novius-os',
+		database: 'novius-os'
 	}, true);
 });
 
