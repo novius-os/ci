@@ -1,4 +1,4 @@
-casper.start('http://novius-os-test.gilles.lyon.novius.fr/install.php', function step1() {
+casper.start('http://novius-os/install.php', function step1() {
     this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
     this.click('form input[type=submit][value="Move on to the next step"]');
 });
