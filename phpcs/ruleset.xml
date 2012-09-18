@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<ruleset name="NOS">
+    <description>Coding standard for Novius-OS</description>
+
+    <rule ref="PSR">
+        <exclude name="Generic.Functions.FunctionCallArgumentSpacing"/>
+    </rule>
+    <rule ref="PSR1"/>
+    <rule ref="PSR2"/>
+</ruleset>
