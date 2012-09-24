@@ -13,6 +13,7 @@
     <exclude-pattern>local/metadata/*</exclude-pattern>
 
     <!-- Classes -->
+    <rule ref="PEAR.Classes.ClassDeclaration"/>
     <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
 
     <!-- Statements -->
