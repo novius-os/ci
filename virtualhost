@@ -1,0 +1,8 @@
+<VirtualHost *:80>
+    DocumentRoot PATH
+    ServerName novius-os
+    <Directory PATH>
+        AllowOverride All
+        Options FollowSymLinks
+    </Directory>
+</VirtualHost>
