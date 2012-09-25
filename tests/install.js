@@ -1,4 +1,6 @@
-casper.start('http://novius-os/install.php', function step1() {
+var BASE_URL = casper.cli.get(1);
+
+casper.start(BASE_URL + 'install.php', function step1() {
     this.waitForSelector('form input[type=submit][value="Move on to the next step"]', (function() {
         this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
         this.click('form input[type=submit][value="Move on to the next step"]');
@@ -77,4 +79,6 @@ casper.then(function appManager() {
     }));
 });
 
-casper.test.done();
+casper.run(function() {
+    this.test.done();
+});
