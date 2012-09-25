@@ -10,8 +10,8 @@ casper.start(BASE_URL + 'install.php', function step1() {
         this.click('form input[type=submit][value="Move on to the next step"]');
     }), (function() {
         this.debugPage();
-        this.die("Timeout reached. No first step ?");
-        this.exit();
+        this.test.fail("Timeout reached. No first step ?");
+        this.test.done();
     }));
 });
 
@@ -26,8 +26,8 @@ casper.then(function step2() {
         }, true);
     }), (function() {
         this.debugPage();
-        this.die("Timeout reached. No second step ?");
-        this.exit();
+        this.test.fail("Timeout reached. No second step ?");
+        this.test.done();
     }));
 });
 
@@ -43,8 +43,8 @@ casper.then(function step3() {
         }, true);
     }), (function() {
         this.debugPage();
-        this.die("Timeout reached. No third step ?");
-        this.exit();
+        this.test.fail("Timeout reached. No third step ?");
+        this.test.done();
     }));
 });
 
@@ -54,8 +54,8 @@ casper.then(function step4() {
         this.click('a[href="admin/"]');
     }), (function() {
         this.debugPage();
-        this.die("Timeout reached. No fourth step ?");
-        this.exit();
+        this.test.fail("Timeout reached. No fourth step ?");
+        this.test.done();
     }));
 });
 
@@ -68,8 +68,8 @@ casper.then(function login() {
         }, true);
     }), (function() {
         this.debugPage();
-        this.die("Timeout reached. No login form ?");
-        this.exit();
+        this.test.fail("Timeout reached. No login form ?");
+        this.test.done();
     }));
 });
 
@@ -78,8 +78,8 @@ casper.then(function appManager() {
 		this.test.assertTitle('Applications manager', 'Applications manager is loaded');
 	}), (function() {
         this.debugPage();
-        this.die("Timeout reached. No Applications manager ?");
-        this.exit();
+        this.test.fail("Timeout reached. No Applications manager ?");
+        this.test.done();
     }));
 });
 
