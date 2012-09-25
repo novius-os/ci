@@ -1,4 +1,8 @@
-var BASE_URL = casper.cli.get(1);
+var BASE_URL = casper.cli.get(1),
+    DB_HOST = casper.cli.get(2) || 'localhost',
+    DB_USER = casper.cli.get(3) || 'root',
+    DB_PASS = casper.cli.get(4) || '',
+    DB_NAME = casper.cli.get(5) || 'novius_os';
 
 casper.start(BASE_URL + 'install.php', function step1() {
     this.waitForSelector('form input[type=submit][value="Move on to the next step"]', (function() {
@@ -15,10 +19,10 @@ casper.then(function step2() {
     this.waitForSelector('form', (function() {
         this.test.assertTextExists('Configuring the MySQL database', 'Step 2 loaded');
         this.fill('form', {
-            hostname: 'localhost',
-            username: 'root',
-            password: '',
-            database: 'novius_os'
+            hostname: DB_HOST,
+            username: DB_USER,
+            password: DB_PASS,
+            database: DB_NAME
         }, true);
     }), (function() {
         this.debugPage();
@@ -81,4 +85,5 @@ casper.then(function appManager() {
 
 casper.run(function() {
     this.test.done();
+    this.test.renderResults(true);
 });
