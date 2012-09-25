@@ -3,7 +3,6 @@ casper.start('http://novius-os/install.php', function step1() {
         this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
         this.click('form input[type=submit][value="Move on to the next step"]');
     }), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No first step ?");
         this.exit();
@@ -20,7 +19,6 @@ casper.then(function step2() {
             database: 'novius_os'
         }, true);
     }), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No second step ?");
         this.exit();
@@ -38,7 +36,6 @@ casper.then(function step3() {
             password_confirmation: 'test'
         }, true);
     }), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No third step ?");
         this.exit();
@@ -50,7 +47,6 @@ casper.then(function step4() {
         this.test.assertTextExists('Setup languages', 'Step 4 loaded');
         this.click('a[href="admin/"]');
     }), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No fourth step ?");
         this.exit();
@@ -65,7 +61,6 @@ casper.then(function login() {
             password : 'test'
         }, true);
     }), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No login form ?");
         this.exit();
@@ -76,13 +71,10 @@ casper.then(function appManager() {
 	this.waitForSelector("#nos-ostabs-1", (function() {
 		this.test.assertTitle('Applications manager', 'Applications manager is loaded');
 	}), (function() {
-        this.debugHTML();
         this.debugPage();
         this.die("Timeout reached. No Applications manager ?");
         this.exit();
     }));
 });
 
-casper.run(function() {
-    this.test.done();
-});
+this.test.done();

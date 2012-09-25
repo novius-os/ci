@@ -1,4 +1,4 @@
-casper.start('http://os1.novius.fr/admin/nos/login', function() {
+casper.start('http://os1.novius.fr/admin/nos/login', function login() {
     this.test.assertExists('#login form', 'Login form is found');
     this.fill('#login form', {
 		email: 'demo@novius-os.org',
@@ -6,24 +6,24 @@ casper.start('http://os1.novius.fr/admin/nos/login', function() {
 	}, true);
 });
 
-casper.then(function() {
+casper.then(function noviusos() {
 	this.waitForSelector("#noviusos", (function() {
 		this.test.assertTitle('Novius OS', 'Novius OS admin homepage title is the one expected');
 	}), (function() {
+        this.debugPage();
         this.die("Timeout reached. No novius OS ?");
         this.exit();
     }));
 });
 
-casper.then(function() {
+casper.then(function appdesk() {
 	this.waitForSelector(".ui-sortable", (function() {
 		this.test.assertExists('#apps a[href="admin/noviusos_blog/appdesk"]', 'Launcher blog exist and sortable');
 	}), (function() {
+        this.debugPage();
         this.die("Timeout reached. No launcher sortable ?");
         this.exit();
     }));
 });
 
-casper.run(function() {
-    this.test.done();
-});
+this.test.done();
