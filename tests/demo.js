@@ -26,4 +26,4 @@ casper.then(function appdesk() {
     }));
 });
 
-this.test.done();
+casper.test.done();

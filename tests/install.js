@@ -77,4 +77,4 @@ casper.then(function appManager() {
     }));
 });
 
-this.test.done();
+casper.test.done();
