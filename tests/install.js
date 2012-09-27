@@ -50,7 +50,7 @@ casper.then(function step3() {
 
 casper.then(function step4() {
     this.waitForSelector('a[href="admin/?tab=admin/nos/tray/appmanager"]', (function() {
-        this.test.assertTextExists('Setup sites', 'Step 4 loaded');
+        this.test.assertTextExists('Setup contexts', 'Step 4 loaded');
         this.click('a[href="admin/?tab=admin/nos/tray/appmanager"]');
     }), (function() {
         this.debugPage();
