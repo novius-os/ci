@@ -37,7 +37,8 @@ do
             sh -c "git $*"
         fi
 	else
-		echo "---------- Skipped $submodule: directory does not exists";
+		echo '-------------------------------------------------------------' # retour à la ligne
+		echo "Skipped $submodule: directory does not exists";
 	fi
 done
 echo '' # line break
