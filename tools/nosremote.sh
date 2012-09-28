@@ -18,7 +18,7 @@ do
 
 	if [ ! -d $path ]
 	then
-		echo '-------------------------------------------------------------' # retour à la ligne
+		echo '-------------------------------------------------------------' # line break
 		mkdir $path
 		echo "$(git clone git://github.com/$submodule.git $path)"
 	fi
@@ -43,13 +43,13 @@ do
 
 	if [ -d $path ]
 	then
-		echo '-------------------------------------------------------------' # retour à la ligne
+		echo '-------------------------------------------------------------' # line break
 		echo $submodule
 		cd $path
 		echo "$(git remote rm github)"
 		echo "$(git remote add github git@github.com:$submodule.git)"
 	else
-		echo "----- Skipped $submodule: directory does not exists";
+		echo "---------- Skipped $submodule: directory does not exists";
 	fi
 done
 
@@ -70,4 +70,4 @@ echo "#!/bin/bash
 
 chmod +x $PRE_COMMIT
 
-echo '' # retour à la ligne
+echo '' # line break
