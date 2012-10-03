@@ -15,6 +15,10 @@ then
     cd ..
 else
     BRANCH=$1
+    cd novius-os-zip/novius-os
+    git checkout $1
+    git submodule update --recursive
+    cd ..
 fi
 
 tar cfz novius-os.tar.gz novius-os --exclude .git --exclude .git* --exclude .travis.yml --exclude hooks/ --exclude tests/ --exclude phpunit.xml
