@@ -38,8 +38,8 @@ casper.then(function step3() {
             name: 'Test',
             firstname: 'Test',
             email: 'test@test.org',
-            password: 'test',
-            password_confirmation: 'test'
+            password: 'longpassword',
+            password_confirmation: 'longpassword'
         }, true);
     }), (function() {
         this.debugPage();
