@@ -25,6 +25,8 @@ tar cfz novius-os.tar.gz novius-os --exclude .git --exclude .git* --exclude .tra
 rm -rf novius-os
 tar xfz novius-os.tar.gz
 
-zip -r -q -9 novius-os.$BRANCH.zip novius-os
+SLASH_POS=`expr index "$BRANCH" /`
+
+zip -r -q -9 novius-os.${BRANCH:$SLASH_POS}.zip novius-os
 rm -f novius-os.tar.gz
 
