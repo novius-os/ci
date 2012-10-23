@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Novius OS Github repositories</title>
+    <script src="http://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function() {
+            var $ul = $('ul');
+            $.ajax({
+                url: "https://api.github.com/users/novius-os/repos",
+                dataType: "jsonp",
+                success: function(returndata) {
+                    $.each(returndata.data, function() {
+                        if (!this.fork && this.master_branch) {
+                            $('<li></li>')
+                                .text(this.name + ' : ' + this.master_branch)
+                                .appendTo($ul);
+                            console.log(this);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<ul></ul>
+</body>
+</html>
