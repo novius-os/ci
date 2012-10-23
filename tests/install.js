@@ -1,4 +1,10 @@
-casper.start('http://novius-os/install.php', function step1() {
+var BASE_URL = casper.cli.get(1),
+    DB_HOST = casper.cli.get(2) || 'localhost',
+    DB_USER = casper.cli.get(3) || 'root',
+    DB_PASS = casper.cli.get(4) || '',
+    DB_NAME = casper.cli.get(5) || 'novius_os';
+
+casper.start(BASE_URL + 'install.php', function step1() {
     this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
     this.click('form input[type=submit][value="Move on to the next step"]');
 });
@@ -6,10 +12,10 @@ casper.start('http://novius-os/install.php', function step1() {
 casper.then(function step() {
 	this.test.assertTextExists('Configuring the MySQL database', 'Step 2 loaded');
     this.fill('form', {
-		hostname: 'localhost',
-		username: 'root',
-		password: '',
-		database: 'novius_os'
+        hostname: DB_HOST,
+        username: DB_USER,
+        password: DB_PASS,
+        database: DB_NAME
 	}, true);
 });
 
@@ -33,7 +39,7 @@ casper.then(function login() {
     this.test.assertExists('#login form', 'Login form is found');
     this.fill('#login form', {
 		email: 'test@test.org',
-		password : 'test'
+		password : 'longpassword'
 	}, true);
 });
 
