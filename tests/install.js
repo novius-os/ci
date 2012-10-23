@@ -64,7 +64,7 @@ casper.then(function login() {
         this.test.assertExists('#login form', 'Login form is found');
         this.fill('#login form', {
             email: 'test@test.org',
-            password : 'test'
+            password : 'longpassword'
         }, true);
     }), (function() {
         this.debugPage();
