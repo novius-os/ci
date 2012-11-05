@@ -7,6 +7,7 @@ declare -A SUBMODULES
 SUBMODULES['novius-os/ci']='ci';
 SUBMODULES['novius-os/noviusos_monkey']='local/applications/noviusos_monkey';
 SUBMODULES['novius-os/noviusos_slideshow']='local/applications/noviusos_slideshow';
+SUBMODULES['novius-os/noviusos_form']='local/applications/noviusos_form';
 
 ##################################
 # Create additional repositories #
