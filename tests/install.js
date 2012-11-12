@@ -74,9 +74,9 @@ casper.then(function login() {
 });
 
 casper.then(function appManager() {
-	this.waitForSelector("#nos-ostabs-1", (function() {
-		this.test.assertTitle('Applications manager', 'Applications manager is loaded');
-	}), (function() {
+    this.waitForSelector("#nos-ostabs-1", (function() {
+        this.test.assertTitle('Applications manager', 'Applications manager is loaded');
+    }), (function() {
         this.debugPage();
         this.test.fail("Timeout reached. No Applications manager ?");
         this.test.done();
