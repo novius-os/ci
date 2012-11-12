@@ -57,7 +57,7 @@
 
         // public members
         this.options = options || {};
-
+        this.options.scope = this.options.scope || document;
         /**
          * Clicks on the DOM element behind the provided selector.
          *
@@ -75,6 +75,7 @@
          * @return string
          */
         this.decode = function decode(str) {
+            /*jshint maxstatements:30 maxcomplexity:30 */
             var c1, c2, c3, c4, i = 0, len = str.length, out = "";
             while (i < len) {
                 do {
@@ -116,6 +117,16 @@
         };
 
         /**
+         * Echoes something to casper console.
+         *
+         * @param  String  message
+         * @return
+         */
+        this.echo = function echo(message) {
+            console.log("[casper.echo] " + message);
+        };
+
+        /**
          * Base64 encodes a string, even binary ones. Succeeds where
          * window.btoa() fails.
          *
@@ -123,6 +134,7 @@
          * @return string
          */
         this.encode = function encode(str) {
+            /*jshint maxstatements:30 */
             var out = "", i = 0, len = str.length, c1, c2, c3;
             while (i < len) {
                 c1 = str.charCodeAt(i++) & 0xff;
@@ -183,9 +195,9 @@
         /**
          * Fills a form with provided field values, and optionnaly submits it.
          *
-         * @param  HTMLElement|String  form    A form element, or a CSS3 selector to a form element
-         * @param  Object              vals    Field values
-         * @return Object                      An object containing setting result for each field, including file uploads
+         * @param  HTMLElement|String  form  A form element, or a CSS3 selector to a form element
+         * @param  Object              vals  Field values
+         * @return Object                    An object containing setting result for each field, including file uploads
          */
         this.fill = function fill(form, vals) {
             var out = {
@@ -214,7 +226,7 @@
                 }
                 var field = this.findAll('[name="' + name + '"]', form);
                 var value = vals[name];
-                if (!field) {
+                if (!field || field.length === 0) {
                     out.errors.push('no field named "' + name + '" in form');
                     continue;
                 }
@@ -226,9 +238,10 @@
                             name: name,
                             path: err.path
                         });
+                    } else if(err.name === "FieldNotFound") {
+                        out.errors.push('Form field named "' + name + '" was not found.');
                     } else {
-                        this.log(err, "error");
-                        throw err;
+                        out.errors.push(err.toString());
                     }
                 }
             }
@@ -243,7 +256,7 @@
          * @return NodeList|undefined
          */
         this.findAll = function findAll(selector, scope) {
-            scope = scope || document;
+            scope = scope || this.options.scope;
             try {
                 var pSelector = this.processSelector(selector);
                 if (pSelector.type === 'xpath') {
@@ -264,7 +277,7 @@
          * @return HTMLElement|undefined
          */
         this.findOne = function findOne(selector, scope) {
-            scope = scope || document;
+            scope = scope || this.options.scope;
             try {
                 var pSelector = this.processSelector(selector);
                 if (pSelector.type === 'xpath') {
@@ -294,37 +307,14 @@
          * Retrieves string contents from a binary file behind an url. Silently
          * fails but log errors.
          *
-         * @param  String  url
-         * @param  String  method
-         * @param  Object  data
-         * @return string
+         * @param   String   url     Url.
+         * @param   String   method  HTTP method.
+         * @param   Object   data    Request parameters.
+         * @return  String
          */
         this.getBinary = function getBinary(url, method, data) {
             try {
-                var xhr = new XMLHttpRequest(), dataString = "";
-                if (typeof method !== "string" || ["GET", "POST"].indexOf(method.toUpperCase()) === -1) {
-                    method = "GET";
-                } else {
-                    method = method.toUpperCase();
-                }
-                xhr.open(method, url, false);
-                this.log("getBinary(): Using HTTP method: '" + method + "'", "debug");
-                xhr.overrideMimeType("text/plain; charset=x-user-defined");
-                if (method === "POST") {
-                    if (typeof data === "object") {
-                        var dataList = [];
-                        for (var k in data) {
-                            dataList.push(escape(k) + "=" + escape(data[k].toString()));
-                        }
-                        dataString = dataList.join('&');
-                        this.log("getBinary(): Using request data: '" + dataString + "'", "debug");
-                    } else if (typeof data === "string") {
-                        dataString = data;
-                    }
-                    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                }
-                xhr.send(method === "POST" ? dataString : null);
-                return xhr.responseText;
+                return this.sendAJAX(url, method, data, false);
             } catch (e) {
                 if (e.name === "NETWORK_ERR" && e.code === 101) {
                     this.log("getBinary(): Unfortunately, casperjs cannot make cross domain ajax requests", "warning");
@@ -335,8 +325,24 @@
         };
 
         /**
+         * Retrieves total document height.
+         * http://james.padolsey.com/javascript/get-document-height-cross-browser/
+         *
+         * @return {Number}
+         */
+        this.getDocumentHeight = function getDocumentHeight() {
+            return Math.max(
+                Math.max(document.body.scrollHeight, document.documentElement.scrollHeight),
+                Math.max(document.body.offsetHeight, document.documentElement.offsetHeight),
+                Math.max(document.body.clientHeight, document.documentElement.clientHeight)
+            );
+        };
+
+        /**
          * Retrieves bounding rect coordinates of the HTML element matching the
-         * provided CSS3 selector
+         * provided CSS3 selector in the following form:
+         *
+         * {top: y, left: x, width: w, height:, h}
          *
          * @param  String  selector
          * @return Object or null
@@ -352,6 +358,35 @@
                 };
             } catch (e) {
                 this.log("Unable to fetch bounds for element " + selector, "warning");
+            }
+        };
+
+        /**
+         * Retrieves the list of bounding rect coordinates for all the HTML elements matching the
+         * provided CSS3 selector, in the following form:
+         *
+         * [{top: y, left: x, width: w, height:, h},
+         *  {top: y, left: x, width: w, height:, h},
+         *  ...]
+         *
+         * @param  String  selector
+         * @return Array
+         */
+        this.getElementsBounds = function getElementsBounds(selector) {
+            var elements = this.findAll(selector);
+            var self = this;
+            try {
+                return Array.prototype.map.call(elements, function(element) {
+                    var clipRect = element.getBoundingClientRect();
+                    return {
+                        top:    clipRect.top,
+                        left:   clipRect.left,
+                        width:  clipRect.width,
+                        height: clipRect.height
+                    };
+                });
+            } catch (e) {
+                this.log("Unable to fetch bounds for elements matching " + selector, "warning");
             }
         };
 
@@ -384,6 +419,54 @@
         };
 
         /**
+         * Retrieves the value of a form field.
+         *
+         * @param  String  inputName  The for input name attr value
+         * @return Mixed
+         */
+        this.getFieldValue = function getFieldValue(inputName) {
+            function getSingleValue(input) {
+                try {
+                    type = input.getAttribute('type').toLowerCase();
+                } catch (e) {
+                    type = 'other';
+                }
+                if (['checkbox', 'radio'].indexOf(type) === -1) {
+                    return input.value;
+                }
+                // single checkbox or… radio button (weird, I know)
+                if (input.hasAttribute('value')) {
+                    return input.checked ? input.getAttribute('value') : undefined;
+                }
+                return input.checked;
+            }
+            function getMultipleValues(inputs) {
+                type = inputs[0].getAttribute('type').toLowerCase();
+                if (type === 'radio') {
+                    var value;
+                    [].forEach.call(inputs, function(radio) {
+                        value = radio.checked ? radio.value : undefined;
+                    });
+                    return value;
+                } else if (type === 'checkbox') {
+                    var values = [];
+                    [].forEach.call(inputs, function(checkbox) {
+                        if (checkbox.checked) {
+                            values.push(checkbox.value);
+                        }
+                    });
+                    return values;
+                }
+            }
+            var inputs = this.findAll('[name="' + inputName + '"]'), type;
+            switch (inputs.length) {
+                case 0:  return null;
+                case 1:  return getSingleValue(inputs[0]);
+                default: return getMultipleValues(inputs);
+            }
+        };
+
+        /**
          * Logs a message. Will format the message a way CasperJS will be able
          * to log phantomjs side.
          *
@@ -407,11 +490,26 @@
                 this.log("mouseEvent(): Couldn't find any element matching '" + selector + "' selector", "error");
                 return false;
             }
-            var evt = document.createEvent("MouseEvents");
-            evt.initMouseEvent(type, true, true, window, 1, 1, 1, 1, 1, false, false, false, false, 0, elem);
-            // dispatchEvent return value is false if at least one of the event
-            // handlers which handled this event called preventDefault
-            return elem.dispatchEvent(evt);
+            try {
+                var evt = document.createEvent("MouseEvents");
+                var center_x = 1, center_y = 1;
+                try {
+                    var pos = elem.getBoundingClientRect();
+                    center_x = Math.floor((pos.left + pos.right) / 2),
+                    center_y = Math.floor((pos.top + pos.bottom) / 2);
+                } catch(e) {}
+                evt.initMouseEvent(type, true, true, window, 1, 1, 1, center_x, center_y, false, false, false, false, 0, elem);
+                // dispatchEvent return value is false if at least one of the event
+                // handlers which handled this event called preventDefault;
+                // so we cannot returns this results as it cannot accurately informs on the status
+                // of the operation
+                // let's assume the event has been sent ok it didn't raise any error
+                elem.dispatchEvent(evt);
+                return true;
+            } catch (e) {
+                this.log("Failed dispatching " + type + "mouse event on " + selector + ": " + e, "error");
+                return false;
+            }
         };
 
         /**
@@ -468,6 +566,39 @@
         };
 
         /**
+         * Performs an AJAX request.
+         *
+         * @param   String   url     Url.
+         * @param   String   method  HTTP method (default: GET).
+         * @param   Object   data    Request parameters.
+         * @param   Boolean  async   Asynchroneous request? (default: false)
+         * @return  String           Response text.
+         */
+        this.sendAJAX = function sendAJAX(url, method, data, async) {
+            var xhr = new XMLHttpRequest(),
+                dataString = "",
+                dataList = [];
+            method = method && method.toUpperCase() || "GET";
+            xhr.open(method, url, !!async);
+            this.log("sendAJAX(): Using HTTP method: '" + method + "'", "debug");
+            xhr.overrideMimeType("text/plain; charset=x-user-defined");
+            if (method === "POST") {
+                if (typeof data === "object") {
+                    for (var k in data) {
+                        dataList.push(encodeURIComponent(k) + "=" + encodeURIComponent(data[k].toString()));
+                    }
+                    dataString = dataList.join('&');
+                    this.log("sendAJAX(): Using request data: '" + dataString + "'", "debug");
+                } else if (typeof data === "string") {
+                    dataString = data;
+                }
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            }
+            xhr.send(method === "POST" ? dataString : null);
+            return xhr.responseText;
+        };
+
+        /**
          * Sets a field (or a set of fields) value. Fails silently, but log
          * error messages.
          *
@@ -481,8 +612,10 @@
                 fields = field;
                 field = fields[0];
             }
-            if (!field instanceof HTMLElement) {
-                this.log("Invalid field type; only HTMLElement and NodeList are supported", "error");
+            if (!(field instanceof HTMLElement)) {
+                var error = new Error('Invalid field type; only HTMLElement and NodeList are supported');
+                error.name = 'FieldNotFound';
+                throw error;
             }
             if (this.options && this.options.safeLogs && field.getAttribute('type') === "password") {
                 // obfuscate password value
@@ -542,7 +675,7 @@
                                     e.checked = (e.value === value);
                                 });
                             } else {
-                                out = 'Urovided radio elements are empty';
+                                out = 'Provided radio elements are empty';
                             }
                             break;
                         default:

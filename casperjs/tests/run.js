@@ -1,19 +1,37 @@
+/*global phantom*/
+
 if (!phantom.casperLoaded) {
     console.log('This script must be invoked using the casperjs executable');
     phantom.exit(1);
 }
 
-var fs = require('fs');
-var utils = require('utils');
-var f = utils.format;
-var includes = [];
-var tests = [];
-var casper = require('casper').create({
+var fs           = require('fs');
+var colorizer    = require('colorizer');
+var utils        = require('utils');
+var f            = utils.format;
+var loadIncludes = ['includes', 'pre', 'post'];
+var tests        = [];
+var casper       = require('casper').create({
     exitOnError: false
 });
 
 // local utils
+function checkSelfTest(tests) {
+    "use strict";
+    var isCasperTest = false;
+    tests.forEach(function(test) {
+        var testDir = fs.absolute(fs.dirname(test));
+        if (fs.isDirectory(testDir)) {
+            if (fs.exists(fs.pathJoin(testDir, '.casper'))) {
+                isCasperTest = true;
+            }
+        }
+    });
+    return isCasperTest;
+}
+
 function checkIncludeFile(include) {
+    "use strict";
     var absInclude = fs.absolute(include.trim());
     if (!fs.exists(absInclude)) {
         casper.warn("%s file not found, can't be included", absInclude);
@@ -37,18 +55,17 @@ function checkIncludeFile(include) {
 // parse some options from cli
 casper.options.verbose = casper.cli.get('direct') || false;
 casper.options.logLevel = casper.cli.get('log-level') || "error";
-
-// overriding Casper.open to prefix all test urls
-casper.setFilter('open.location', function(location) {
-    if (!/^http/.test(location)) {
-        return f('file://%s/%s', fs.workingDirectory, location);
-    }
-    return location;
-});
+if (casper.cli.get('no-colors') === true) {
+    var cls = 'Dummy';
+    casper.options.colorizerType = cls;
+    casper.colorizer = colorizer.create(cls);
+}
+casper.test.options.failFast = casper.cli.get('fail-fast') || false;
 
 // test paths are passed as args
 if (casper.cli.args.length) {
     tests = casper.cli.args.filter(function(path) {
+        "use strict";
         return fs.isFile(path) || fs.isDirectory(path);
     });
 } else {
@@ -56,20 +73,34 @@ if (casper.cli.args.length) {
     casper.exit(1);
 }
 
-// includes handling
-if (casper.cli.has('includes')) {
-    includes = casper.cli.get('includes').split(',').map(function(include) {
-        // we can't use filter() directly because of abspath transformation
-        return checkIncludeFile(include);
-    }).filter(function(include) {
-        return utils.isString(include);
-    });
-    casper.test.includes = utils.unique(includes);
+// check for casper selftests
+if (!phantom.casperSelfTest && checkSelfTest(tests)) {
+    casper.warn('To run casper self tests, use the `selftest` command.');
+    casper.exit(1);
 }
+
+// includes handling
+this.loadIncludes.forEach(function(include){
+    "use strict";
+    var container;
+    if (casper.cli.has(include)) {
+        container = casper.cli.get(include).split(',').map(function(file) {
+            return checkIncludeFile(file);
+        }).filter(function(file) {
+            return utils.isString(file);
+        });
+
+        casper.test.loadIncludes[include] = utils.unique(container);
+    }
+});
 
 // test suites completion listener
 casper.test.on('tests.complete', function() {
+    "use strict";
     this.renderResults(true, undefined, casper.cli.get('xunit') || undefined);
+    if (this.options.failFast && this.testResults.failures.length > 0) {
+        casper.warn('Test suite failed fast, all tests may not have been executed.');
+    }
 });
 
 // run all the suites

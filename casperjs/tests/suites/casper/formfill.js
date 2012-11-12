@@ -1,3 +1,5 @@
+/*global casper*/
+/*jshint strict:false*/
 casper.start('tests/site/form.html', function() {
     this.test.comment('Casper.fill()');
     this.fill('form[action="result.html"]', {
@@ -52,17 +54,33 @@ casper.then(function() {
     this.test.assertUrlMatch(/topic=bar/, 'Casper.fill() select field was submitted');
 });
 
+casper.thenOpen('tests/site/form.html', function() {
+    this.test.comment('Unexistent fields');
+    this.test.assertRaises(this.fill, ['form[action="result.html"]', {
+        unexistent: 42
+    }, true], 'Casper.fill() raises an exception when unable to fill a form');
+});
+
 // multiple forms
 casper.thenOpen('tests/site/multiple-forms.html', function() {
     this.test.comment('Multiple forms');
     this.fill('form[name="f2"]', {
         yo: "ok"
     }, true);
+}).then(function() {
+    this.test.assertUrlMatch(/\?f=f2&yo=ok$/, 'Casper.fill() handles multiple forms');
 });
 
-casper.then(function() {
-    this.test.assertUrlMatch(/\?f=f2&yo=ok$/, 'Casper.fill() handles multiple forms');
-}),
+// issue #267: array syntax field names
+casper.thenOpen('tests/site/field-array.html', function() {
+    this.test.comment('Field arrays');
+    this.fill('form', {
+        'foo[bar]': "bar",
+        'foo[baz]': "baz"
+    }, true);
+}).then(function() {
+    this.test.assertUrlMatch('?foo[bar]=bar&foo[baz]=baz', 'Casper.fill() handles array syntax field names');
+});
 
 casper.run(function() {
     this.test.done();

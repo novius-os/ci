@@ -1,7 +1,140 @@
 CasperJS Changelog
 ==================
 
-XXXX-XX-XX, v1.0.0-RC1
+XXXX-XX-XX, v1.0.0
+------------------
+
+- fixed `Casper.die()` and `Casper.evaluateOrDie()` were not printing the error onto the console
+- fixed [#266](https://github.com/n1k0/casperjs/issues/266) - Fix `tester` module and its self tests
+- fixed [#268](https://github.com/n1k0/casperjs/issues/266) - Wrong message on step timeout
+- fixed [#215](https://github.com/n1k0/casperjs/issues/215) - added a `--fail-fast` option to the `casper test` command, in order to terminate a test suite execution as soon as any failure is encountered
+- added `Tester.assertFalse()` as an alias of `Tester.assertNot()`
+
+2012-10-31, v1.0.0-RC4
+----------------------
+
+Next version should be 1.0.0 stable.
+
+- fixed [#261](https://github.com/n1k0/casperjs/issues/261) - Impossible to require CoffeeScript modules
+- fixed [#262](https://github.com/n1k0/casperjs/issues/262) - Injecting clientScripts is not working
+- fixed [#259](https://github.com/n1k0/casperjs/issues/259) - enhanced `Tester.assertField()` method, which can now tests for other field types than `input`s.
+- fixed `Casper.getCurrentUrl()` could misbehave with encoded urls
+- added [`Casper.echo()`](http://casperjs.org/api.html#clientutils.echo) to print a message to the casper console from the remote DOM environment
+- added [`Casper.waitForText()`](http://casperjs.org/api.html#casper.waitForText) to wait for a given text to be present in page HTML contents
+- added [`ClientUtils.getFieldValue()`](http://casperjs.org/api.html#clientutils.getFieldValue)
+- Local CoffeeScript version has been upgraded to 1.4.0
+
+2012-10-23, v1.0.0-RC3
+----------------------
+
+### Important Changes & Caveats
+
+- the `injector` module is now deprecated, but kept for backward compatibility purpose.
+- **BC BREAK**: fixes [#220](https://github.com/n1k0/casperjs/issues/220), [#237](https://github.com/n1k0/casperjs/issues/237) - added a `waitTimeout` options, removed `defaultWaitTimeout` option.
+- **BC BREAK** (for the better): fixes [#249](https://github.com/n1k0/casperjs/issues/249) - default timeout functions don't `die()` anymore in tests
+- **BC BREAK** (for the better): merged [#188](https://github.com/n1k0/casperjs/issues/188) - Easy access to current response object;
+  You can now access the current response object as the first parameter of step callbacks:
+
+```javascript
+require('casper').create().start('http://www.google.fr/', function(response) {
+    require('utils').dump(response);
+}).run();
+```
+
+That gives:
+
+```
+$ casperjs dump-headers.js
+{
+    "contentType": "text/html; charset=UTF-8",
+    "headers": [
+        {
+            "name": "Date",
+            "value": "Thu, 18 Oct 2012 08:17:29 GMT"
+        },
+        {
+            "name": "Expires",
+            "value": "-1"
+        },
+        // ... lots of other headers
+    ],
+    "id": 1,
+    "redirectURL": null,
+    "stage": "end",
+    "status": 200,
+    "statusText": "OK",
+    "time": "2012-10-18T08:17:37.068Z",
+    "url": "http://www.google.fr/"
+}
+```
+
+To fetch a particular header by its name:
+
+```javascript
+require('casper').create().start('http://www.google.fr/', function(response) {
+    this.echo(response.headers.get('Date'));
+}).run();
+```
+
+That gives:
+
+```javascript
+$ casperjs dump-single-header.js
+Thu, 18 Oct 2012 08:26:34 GMT
+```
+
+The documentation has been [updated accordingly](http://casperjs.org/api.html#casper.then.callbacks).
+
+### Bugfixes & enhancements
+
+- merged [#234](https://github.com/n1k0/casperjs/issues/234) - New Windows Loader written in Batch. Python is no more a requirement for using CasperJS on Windows. New installation instructions are [available](http://casperjs.org/installation.html#windows).
+- a new `onWaitTimeout` option has been added, to allow defining a default behavior when a `waitFor*` function times out.
+- [Casper.resourceExists()](http://casperjs.org/api.html#casper.resourceExists) and related functions now checks for non HTTP-404 received responses.
+- fixed [#167](https://github.com/n1k0/casperjs/issues/167) - fixed opening truncated/uncomplete root urls may give erroneous HTTP statuses
+- closes [#205](https://github.com/n1k0/casperjs/issues/205) - [`debugHTML()`](http://casperjs.org/api.html#casper.debugHTML) can have a selector passed; added [`getHTML()`](http://casperjs.org/api.html#casper.getHTML)
+- closes [#230](https://github.com/n1k0/casperjs/issues/230) - added [`ClientUtils.getElementsBound()`](http://casperjs.org/api.html#clientutils.getElementsBounds) and [`Casper.getElementsBound()`](http://casperjs.org/api.html#casper.getElementsBounds)
+- fixed [#235](https://github.com/n1k0/casperjs/issues/235) - updated `Casper.evaluate()` to use phantomjs >= 1.6 native one. As a consequence, **the `injector` module is marked as deprecated**.
+- fixed [#250](https://github.com/n1k0/casperjs/issues/250) - prevent self tests to be run using the standard `casper test` command
+- fixed [#254](https://github.com/n1k0/casperjs/issues/254) - fix up one use of qsa, hit when filling forms with missing elements
+- [fixed](https://github.com/n1k0/casperjs/commit/ef6c1828c7b64e1cf99b98e27600d0b63308cad3) edge case when current document url couldn't be properly decoded
+
+2012-10-01, v1.0.0-RC2
+----------------------
+
+### Important Changes & Caveats
+
+- **PhantomJS 1.6 is now the minimal requirement**, PhantomJS 1.7 is supported.
+- CasperJS continues to ship with its own implementation of CommonJS' module pattern, due to the way it has to work to offer its own executable. While the implementations are nearly the same, **100% compatibility is not guaranteed**.
+
+### Bugfixes & enhancements
+
+- fixed [#119](https://github.com/n1k0/casperjs/issues/119) - `Casper.currentHTTPStatus` now defaults to `null` when resource are loaded using the `file://` protocol
+- fixed [#130](https://github.com/n1k0/casperjs/issues/130) - added a `--no-colors` option to the `casper test` command to skip output coloration
+- fixed [#153](https://github.com/n1k0/casperjs/issues/153) - erroneous mouse event results when `event.preventDefault()` was used.
+- fixed [#164](https://github.com/n1k0/casperjs/issues/164) - ability to force CLI parameters as strings (see [related documentation](http://casperjs.org/cli.html#raw)).
+- fixed [#178](https://github.com/n1k0/casperjs/issues/178) - added `Casper.getPageContent()` to access raw page body contents on non-html received content-types.
+- fixed [#180](https://github.com/n1k0/casperjs/issues/180) - CasperJS tests are now run against a local HTTP test server. A new `casper selftest` command has been added as well.
+- fixed [#189](https://github.com/n1k0/casperjs/issue/189) - fixed invalid XML due to message colorization
+- fixed [#197](https://github.com/n1k0/casperjs/pull/197) & [#240](https://github.com/n1k0/casperjs/pull/240/) - Added new tester methods:
+  * [`assertField`](http://casperjs.org/api.html#tester.assertField)
+  * [`assertSelectorHasText`](http://casperjs.org/api.html#tester.assertSelectorHasText)
+  * [`assertSelectorDoesntHaveText`](http://casperjs.org/api.html#tester.assertSelectorDoesntHaveText)
+  * [`assertVisible`](http://casperjs.org/api.html#tester.assertVisible)
+  * [`assertNotVisible`](http://casperjs.org/api.html#tester.assertNotVisible)
+- fixed [#202](https://github.com/n1k0/casperjs/pull/202) - Fix test status timeouts when running multiple suites
+- fixed [#204](https://github.com/n1k0/casperjs/pull/204) - Fix for when the url is changed via javascript
+- fixed [#210](https://github.com/n1k0/casperjs/pull/210) - Changed `escape` to `encodeURIComponent` for downloading binaries via POST
+- fixed [#216](https://github.com/n1k0/casperjs/pull/216) - Change clientutils to be able to set a global scope
+- fixed [#219](https://github.com/n1k0/casperjs/issues/219) - ease chaining of `run()` calls ([more explanations](https://groups.google.com/forum/#!topic/casperjs/jdQ-CrgnUd8))
+- fixed [#222](https://github.com/n1k0/casperjs/pull/222) & [#211](https://github.com/n1k0/casperjs/issues/211) - Change mouse event to include an X + Y value for click position
+- fixed [#231](https://github.com/n1k0/casperjs/pull/231) - added `--pre` and `--post` options to the `casperjs test` command to load test files before and after the execution of testsuite
+- fixed [#232](https://github.com/n1k0/casperjs/issues/232) - symlink resolution in the ruby version of the `casperjs` executable
+- fixed [#236](https://github.com/n1k0/casperjs/issues/236) - fixed `Casper.exit` returned `this` after calling `phantom.exit()` which may caused PhantomJS to hang
+- fixed [#252](https://github.com/n1k0/casperjs/issues/252) - better form.fill() error handling
+- added [`ClientUtils.getDocumentHeight()`](http://casperjs.org/api.html#clientutils.getDocumentHeight)
+- added [`toString()`](http://casperjs.org/api.html#casper.toString) and [`status()`](http://casperjs.org/api.html#casper.status) methods to `Casper` prototype.
+
+2012-06-26, v1.0.0-RC1
 ----------------------
 
 ### PhantomJS 1.5 & 1.6

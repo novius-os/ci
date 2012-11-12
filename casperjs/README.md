@@ -21,9 +21,37 @@ Don't hesitate to pull request for any cool example of yours as well!
 
 Subscribe to the [project mailing-list](https://groups.google.com/forum/#!forum/casperjs)
 
-Follow [@casperjs_org on twitter](https://twitter.com/casperjs_org).
+Follow the CasperJS project [on twitter](https://twitter.com/casperjs_org) and [Google+](https://plus.google.com/b/106641872690063476159/).
 
-## Contributing to the docs
+## Show me some code!
+
+Sample test to see if some dropdown can be opened:
+
+```javascript
+casper.start('http://twitter.github.com/bootstrap/javascript.html#dropdowns', function() {
+    this.test.assertExists('#navbar-example');
+    this.click('#dropdowns .nav-pills .dropdown:last-of-type a.dropdown-toggle');
+    this.waitUntilVisible('#dropdowns .nav-pills .open', function() {
+        this.test.pass('Dropdown is open');
+    });
+});
+
+casper.run(function() {
+    this.test.done();
+});
+```
+
+Run the script:
+
+![](http://cl.ly/image/112m0F2n162i/Capture%20d%E2%80%99%C3%A9cran%202012-10-19%20%C3%A0%2016.37.15.png)
+
+## Contributing
+
+### Contributing code
+
+Please read the [CONTRIBUTING.md](https://github.com/n1k0/casperjs/blob/master/CONTRIBUTING.md) file contents.
+
+### Contributing documentation
 
 CasperJS's documentation is written using the [Markdown format](http://daringfireball.net/projects/markdown/), and hosted on Github thanks to the [Github Pages Feature](http://pages.github.com/).
 

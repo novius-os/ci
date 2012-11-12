@@ -1,4 +1,54 @@
-var utils = require('utils'), t = casper.test, x = require('casper').selectXPath;
+/*global casper*/
+/*jshint strict:false maxstatements:99*/
+var utils = require('utils'),
+    t = casper.test,
+    x = require('casper').selectXPath;
+
+t.comment('cleanUrl()');
+(function() {
+    var testCases = {
+        'http://google.com/': 'http://google.com/',
+        'http://google.com': 'http://google.com/',
+        'http://www.google.com/': 'http://www.google.com/',
+        'http://www.google.com/?plop=2': 'http://www.google.com/?plop=2',
+        'https://google.com/': 'https://google.com/',
+        'https://google.com': 'https://google.com/',
+        'https://www.google.com/': 'https://www.google.com/',
+        'https://www.google.com/?plop=2': 'https://www.google.com/?plop=2',
+        'file:///Users/toto/toto.html': 'file:///Users/toto/toto.html',
+        '/100': '/100'
+    };
+    for (var testCase in testCases) {
+        t.assertEquals(utils.cleanUrl(testCase), testCases[testCase], 'cleanUrl() cleans an URL');
+    }
+})();
+
+t.comment('equals()');
+(function() {
+    t.assert(utils.equals(null, null), 'equals() null equality');
+    t.assertNot(utils.equals(null, undefined), 'equals() null vs. undefined inequality');
+    t.assert(utils.equals("hi", "hi"), 'equals() string equality');
+    t.assertNot(utils.equals("hi", "ih"), 'equals() string inequality');
+    t.assert(utils.equals(5, 5), 'equals() number equality');
+    t.assertNot(utils.equals("5", 5), 'equals() number equality without implicit cast');
+    t.assert(utils.equals(5, 5.0), 'equals() number equality with cast');
+    t.assertNot(utils.equals(5, 10), 'equals() number inequality');
+    t.assert(utils.equals([], []), 'equals() empty array equality');
+    t.assert(utils.equals([1,2], [1,2]), 'equals() array equality');
+    t.assert(utils.equals([1,2,[1,2,function(){}]], [1,2,[1,2,function(){}]]), 'equals() complex array equality');
+    t.assertNot(utils.equals([1,2,[1,2,function(a){}]], [1,2,[1,2,function(b){}]]), 'equals() complex array inequality');
+    t.assertNot(utils.equals([1,2], [2,1]), 'equals() shuffled array inequality');
+    t.assertNot(utils.equals([1,2], [1,2,3]), 'equals() array length inequality');
+    t.assert(utils.equals({}, {}), 'equals() empty object equality');
+    t.assert(utils.equals({a:1,b:2}, {a:1,b:2}), 'equals() object length equality');
+    t.assert(utils.equals({a:1,b:2}, {b:2,a:1}), 'equals() shuffled object keys equality');
+    t.assertNot(utils.equals({a:1,b:2}, {a:1,b:3}), 'equals() object inequality');
+    t.assert(utils.equals({1:{name:"bob",age:28}, 2:{name:"john",age:26}}, {1:{name:"bob",age:28}, 2:{name:"john",age:26}}), 'equals() complex object equality');
+    t.assertNot(utils.equals({1:{name:"bob",age:28}, 2:{name:"john",age:26}}, {1:{name:"bob",age:28}, 2:{name:"john",age:27}}), 'equals() complex object inequality');
+    t.assert(utils.equals(function(x){return x;}, function(x){return x;}), 'equals() function equality');
+    t.assertNot(utils.equals(function(x){return x;}, function(y){return y+2;}), 'equals() function inequality');
+    t.assert(utils.equals([{a:1, b:2}, {c:3, d:4}], [{a:1, b:2}, {c:3, d:4}]), 'equals() arrays of objects');
+})();
 
 t.comment('fileExt()');
 (function() {
@@ -18,7 +68,7 @@ t.comment('fileExt()');
 
 t.comment('fillBlanks()');
 (function() {
-    testCases = {
+    var testCases = {
         'foo':         'foo       ',
         '  foo bar ':  '  foo bar ',
         '  foo bar  ': '  foo bar  '
@@ -31,7 +81,7 @@ t.comment('fillBlanks()');
 
 t.comment('getPropertyPath()');
 (function() {
-    testCases = [
+    var testCases = [
         {
             input:  utils.getPropertyPath({}, 'a.b.c'),
             output: undefined
@@ -75,7 +125,7 @@ t.comment('isArray()');
 
 t.comment('isClipRect()');
 (function() {
-    testCases = [
+    var testCases = [
         [{},                                              false],
         [{top: 2},                                        false],
         [{top: 2, left: 2, width: 2, height: 2},          true],
@@ -85,6 +135,22 @@ t.comment('isClipRect()');
 
     testCases.forEach(function(testCase) {
         t.assertEquals(utils.isClipRect(testCase[0]), testCase[1], 'isClipRect() checks for a ClipRect');
+    });
+})();
+
+t.comment('isHTTPResource()');
+(function() {
+    var testCases = [
+        [{},                              false],
+        [{url: 'file:///var/www/i.html'}, false],
+        [{url: 'mailto:plop@plop.com'},   false],
+        [{url: 'ftp://ftp.plop.com'},     false],
+        [{url: 'HTTP://plop.com/'},       true],
+        [{url: 'https://plop.com/'},      true]
+    ];
+
+    testCases.forEach(function(testCase) {
+        t.assertEquals(utils.isHTTPResource(testCase[0]), testCase[1], 'isHTTPResource() checks for an HTTP resource');
     });
 })();
 
@@ -137,7 +203,7 @@ t.comment('isWebPage()');
 
 t.comment('isJsFile()');
 (function() {
-    testCases = {
+    var testCases = {
         '':             false,
         'toto.png':     false,
         'plop':         false,
@@ -152,7 +218,7 @@ t.comment('isJsFile()');
 
 t.comment('mergeObjects()');
 (function() {
-    testCases = [
+    var testCases = [
         {
             obj1: {a: 1}, obj2: {b: 2}, merged: {a: 1, b: 2}
         },
@@ -183,7 +249,7 @@ t.comment('mergeObjects()');
 
 t.comment('unique()');
 (function() {
-    testCases = [
+    var testCases = [
         {
             input:  [1,2,3],
             output: [1,2,3]
