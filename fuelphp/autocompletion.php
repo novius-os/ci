@@ -120,12 +120,12 @@ class Profiler extends Fuel\Core\Profiler {}
 class RedisException extends Fuel\Core\RedisException {}
 class Redis extends Fuel\Core\Redis {}
 class Request extends Fuel\Core\Request {}
-class Response extends Fuel\Core\Response {}
+//class Response extends Fuel\Core\Response {}
 class Route extends Fuel\Core\Route {}
 class Router extends Fuel\Core\Router {}
 class Security extends Fuel\Core\Security {}
 class Session extends Fuel\Core\Session {}
-class Str extends Fuel\Core\Str {}
+//class Str extends Fuel\Core\Str {}
 /**
  * @method void assertArrayHasKey(mixed $key, array $array, string $message = '')
  * @method void assertArrayNotHasKey(mixed $key, array $array, string $message = '')
