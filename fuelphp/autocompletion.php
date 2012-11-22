@@ -224,5 +224,5 @@ class Unzip extends Fuel\Core\Unzip {}
 class Upload extends Fuel\Core\Upload {}
 class Uri extends Fuel\Core\Uri {}
 class Validation extends Fuel\Core\Validation {}
-class View extends Fuel\Core\View {}
+//class View extends Fuel\Core\View {}
 abstract class ViewModel extends Fuel\Core\ViewModel {}
