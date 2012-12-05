@@ -78,7 +78,7 @@ class Config extends Fuel\Core\Config {}
 abstract class Controller extends Fuel\Core\Controller {}
 class Cookie extends Fuel\Core\Cookie {}
 class Crypt extends Fuel\Core\Crypt {}
-class Date extends Fuel\Core\Date {}
+//class Date extends Fuel\Core\Date {}
 class DB extends Fuel\Core\DB {}
 class DBUtil extends Fuel\Core\DBUtil {}
 class Debug extends Fuel\Core\Debug {}
