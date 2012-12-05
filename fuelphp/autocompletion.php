@@ -74,7 +74,7 @@ class CacheExpiredException extends Fuel\Core\CacheExpiredException {}
 class Cache extends Fuel\Core\Cache {}
 class Cli extends Fuel\Core\Cli {}
 class ConfigException extends Fuel\Core\ConfigException {}
-class Config extends Fuel\Core\Config {}
+//class Config extends Fuel\Core\Config {}
 abstract class Controller extends Fuel\Core\Controller {}
 class Cookie extends Fuel\Core\Cookie {}
 class Crypt extends Fuel\Core\Crypt {}
