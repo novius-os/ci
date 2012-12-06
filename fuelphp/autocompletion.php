@@ -67,7 +67,7 @@ class Session_Memcached extends Fuel\Core\Session_Memcached {}
 class Session_Redis extends Fuel\Core\Session_Redis {}
 class Validation_Error extends Fuel\Core\Validation_Error {}
 class Agent extends Fuel\Core\Agent {}
-class Arr extends Fuel\Core\Arr {}
+//class Arr extends Fuel\Core\Arr {}
 class Asset extends Fuel\Core\Asset {}
 class Autoloader extends Fuel\Core\Autoloader {}
 class CacheExpiredException extends Fuel\Core\CacheExpiredException {}
