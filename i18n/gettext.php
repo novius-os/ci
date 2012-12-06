@@ -185,7 +185,7 @@ $sprint_dict = function ($dict) {
                 $out .= "    #: ".$usage."\n";
             }
         }
-        $out .= "    '" . addslashes(stripslashes($msgid)) . "' => '" . addslashes(stripslashes($msg['str'])) . "',\n\n";
+        $out .= "    '" . str_replace("'", "\\'", stripslashes($msgid)) . "' => '" . str_replace("'", "\\'", stripslashes($msg['str'])) . "',\n\n";
     }
     $out .= ");\n";
     return $out;
@@ -193,6 +193,7 @@ $sprint_dict = function ($dict) {
 
 
 is_dir('lang') || mkdir('lang');
+is_dir('lang/'.LANG) || mkdir('lang/'.LANG);
 
 $dict = array();
 foreach ($found as $dict_name => $messages) {
@@ -218,11 +219,11 @@ echo "\n";
 
 foreach ($found as $dict_name => $messages) {
     echo "   $dict_name:\n";
-    file_put_contents('lang/'.$dict_name.'.lang.php', $sprint_dict($found[$dict_name]));
+    file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict($found[$dict_name]));
 }
 
 echo "   'unused'\n";
-file_put_contents('lang/unused.lang.php', $sprint_dict($unused));
+file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict($unused));
 
 
 $stats = array(

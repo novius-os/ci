@@ -23,6 +23,7 @@ tar cfz $ROOT/po/novius-os.tar.gz \
   --exclude *.gif \
   --exclude *.jpg \
   --exclude *.js \
+  --exclude *.css \
   --exclude applications \
   --exclude htdocs \
   --exclude static \
@@ -86,7 +87,7 @@ echo "";
 echo `date +%H:%M:%S` $GENERATED_PO .po files generated
 
 cd $ROOT
-php gettext.php $LANG ${3:-dict}
+php gettext.php $LANG ${3:-}
 
 echo `date +%H:%M:%S` .po files converted to .php array files
 

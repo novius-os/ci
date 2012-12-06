@@ -14,5 +14,5 @@
         '\Wappdesk[./]|\Wcrud[./]',
     ),
     // false == default dict
-    'generic' => false,
+    'common' => false,
 );
