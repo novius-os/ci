@@ -162,7 +162,7 @@ function dict_stat($messages)
     return $stat;
 }
 
-$sprint_dict = function ($dict) {
+$sprint_dict_php = function ($dict) {
 
     $stat = dict_stat($dict);
 
@@ -188,6 +188,36 @@ $sprint_dict = function ($dict) {
         $out .= "    '" . str_replace("'", "\\'", stripslashes($msgid)) . "' => '" . str_replace("'", "\\'", stripslashes($msg['str'])) . "',\n\n";
     }
     $out .= ");\n";
+    return $out;
+};
+
+$sprint_dict_po = function ($dict) {
+
+    $stat = dict_stat($dict);
+
+    echo '      '.$stat['stat_msg']."\n";
+    echo '      '.$stat['stat_word']."\n\n";
+
+    $out = "\n";
+    $out .= "# Generated on ".date('d/m/Y H:i:s')."\n\n";
+    $out .= "# ".$stat['stat_msg']."\n";
+    $out .= "# ".$stat['stat_word']."\n";
+    $out .= "\n\n";
+    foreach ($dict as $msgid => $msg) {
+        if (!empty($msg['comment'])) {
+            foreach (explode("\n", $msg['comment']) as $comment) {
+                $out .= "#. ".$comment."\n";
+            }
+        }
+        if (!empty($msg['usage'])) {
+            foreach (array_unique(explode("\n", $msg['usage'])) as $usage) {
+                $out .= "#: ".$usage."\n";
+            }
+        }
+        $out .= 'msgid "' . str_replace('"', '\\"', stripslashes($msgid)) . '"'."\n";
+        $out .= 'msgstr "' . str_replace('"', '\\"', stripslashes($msg['str'])) . '"'."\n\n";
+    }
+    $out .= "\n";
     return $out;
 };
 
@@ -219,11 +249,13 @@ echo "\n";
 
 foreach ($found as $dict_name => $messages) {
     echo "   $dict_name:\n";
-    file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict($found[$dict_name]));
+    file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict_php($found[$dict_name]));
+    file_put_contents('lang/'.LANG.'/'.$dict_name.'.po', $sprint_dict_po($found[$dict_name]));
 }
 
 echo "   'unused'\n";
-file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict($unused));
+file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict_php($unused));
+file_put_contents('lang/'.LANG.'/unused.po', $sprint_dict_po($unused));
 
 
 $stats = array(
