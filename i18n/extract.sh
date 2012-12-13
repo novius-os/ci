@@ -1,4 +1,10 @@
 
+if [ -z "$1" ]
+  then
+    echo "Please set a lang"
+    exit
+fi
+
 rm -rf generated
 mkdir generated
 
