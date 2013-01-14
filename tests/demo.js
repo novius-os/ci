@@ -1,4 +1,4 @@
-casper.start('http://http://demo.novius-os.org/admin/nos/login', function login() {
+casper.start('http://demo.novius-os.org/admin/nos/login', function login() {
     this.test.assertExists('#login form', 'Login form is found');
     this.fill('#login form', {
 		email: 'demo@novius-os.org',
