@@ -1,4 +1,4 @@
-var BASE_URL = casper.cli.get(1);
+var BASE_URL = casper.cli.get('base_url');
 
 casper.start(BASE_URL + 'admin/nos/login/reset', function login() {
     this.waitForSelector('#login', function() {

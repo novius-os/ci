@@ -1,5 +1,4 @@
-var BASE_URL = casper.cli.get(1),
-    pathlogin = casper.cli.get(0).replace('appmanager.js', 'login.js'),
+var pathlogin = casper.cli.get(0).replace('appmanager.js', 'login.js'),
     apps = [
         {name:'noviusos_appwizard', title:'App Wizard'},
         {name:'noviusos_blognews', title:'Blog / News'},
