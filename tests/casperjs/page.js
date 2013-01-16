@@ -43,10 +43,12 @@ casper.then(function addAPage() {
         return tabSelected('Add a page');
     }, function() {
         this.test.assertTitle('Add a page', 'Add page form is loaded');
-        this.fill('form[action$="admin/noviusos_page/page/insert_update"]', {
-            page_title: 'New test page'
-        }, false);
-        this.clickLabel('Add', 'span');
+        casper.waitForSelector('form[action$="admin/noviusos_page/page/insert_update"]', function () {
+            this.fill('form[action$="admin/noviusos_page/page/insert_update"]', {
+                page_title: 'New test page'
+            }, false);
+            this.clickLabel('Add', 'span');
+        });
     }, function() {
         error("Timeout reached. No add page form ?");
     });
@@ -87,10 +89,12 @@ casper.then(function editPage() {
         return tabSelected('New test page');
     }, function() {
         this.test.assertTitle('New test page', 'New test page form is loaded');
-        this.fill('form[action*="admin/noviusos_page/page/insert_update/"]', {
-            page_title: 'New test page modified'
-        }, false);
-        this.clickLabel('Save', 'span');
+        casper.waitForSelector('form[action*="admin/noviusos_page/page/insert_update/"]', function () {
+            this.fill('form[action*="admin/noviusos_page/page/insert_update/"]', {
+                page_title: 'New test page modified'
+            }, false);
+            this.clickLabel('Save', 'span');
+        });
     }, function() {
         error("Timeout reached. No update page form ?");
     });
