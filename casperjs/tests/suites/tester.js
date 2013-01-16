@@ -28,6 +28,9 @@ casper.thenOpen('tests/site/index.html', function() {
     t.comment('Tester.assertTextExist()');
     t.assertTextExist('form', 'Tester.assertTextExist() checks that page body contains text [alias]');
 
+    t.comment('Tester.assertTextDoesntExist()');
+    t.assertTextDoesntExist('blah', "Tester.assertTextDoesntExist() checks that page body doesn't contain provided text");
+
     t.comment('Tester.assertSelectorHasText()');
     t.assertSelectorHasText('h1', 'Title', 'Tester.assertSelectorHasText() works as expected');
 
@@ -39,6 +42,12 @@ casper.thenOpen('tests/site/index.html', function() {
 
     t.comment('Tester.assertTrue()');
     t.assertTrue(true, 'Tester.assertTrue() works as expected [alias]');
+
+    t.comment('Tester.assertTruthy()');
+    t.assertTruthy('1', 'Tester.assertTruthy() works as expected');
+
+    t.comment('Tester.assertFalsy()');
+    t.assertFalsy('', 'Tester.assertFalsy() works as expected');
 
     t.comment('Tester.assertNot()');
     t.assertNot(false, 'Tester.assertNot() works as expected');
@@ -201,6 +210,17 @@ casper.then(function() {
     t.assertEquals(t.getPasses().length, passCount + 1, "Tester.getPasses() works as expected");
 });
 
+casper.then(function() {
+    t.comment('Tester.calculateSuiteDuration()');
+    function add(a, b) {
+        return a + b;
+    }
+    var passedTime = t.getPassesTime().reduce(add, 0),
+        failedTime = t.getFailuresTime().reduce(add, 0),
+        calculatedSum = t.calculateSuiteDuration();
+    t.assertEquals(calculatedSum, passedTime + failedTime, "Tester.calculateSuiteDuration() works as expected")
+});
+
 casper.run(function() {
-    t.done();
+    t.done(59);
 });

@@ -41,6 +41,7 @@
      * Casper client-side helpers.
      */
     exports.ClientUtils = function ClientUtils(options) {
+        /*jshint maxstatements:40*/
         // private members
         var BASE64_ENCODE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
         var BASE64_DECODE_CHARS = new Array(
@@ -200,6 +201,7 @@
          * @return Object                    An object containing setting result for each field, including file uploads
          */
         this.fill = function fill(form, vals) {
+            /*jshint maxcomplexity:8*/
             var out = {
                 errors: [],
                 fields: [],
@@ -260,7 +262,7 @@
             try {
                 var pSelector = this.processSelector(selector);
                 if (pSelector.type === 'xpath') {
-                    return this.getElementsByXPath(pSelector.path);
+                    return this.getElementsByXPath(pSelector.path, scope);
                 } else {
                     return scope.querySelectorAll(pSelector.path);
                 }
@@ -281,7 +283,7 @@
             try {
                 var pSelector = this.processSelector(selector);
                 if (pSelector.type === 'xpath') {
-                    return this.getElementByXPath(pSelector.path);
+                    return this.getElementByXPath(pSelector.path, scope);
                 } else {
                     return scope.querySelector(pSelector.path);
                 }
@@ -391,13 +393,42 @@
         };
 
         /**
+         * Retrieves information about the node matching the provided selector.
+         *
+         * @param  String|Object  selector  CSS3/XPath selector
+         * @return Object
+         */
+        this.getElementInfo = function getElementInfo(selector) {
+            var element = this.findOne(selector);
+            var bounds = this.getElementBounds(selector);
+            var attributes = {};
+            [].forEach.call(element.attributes, function(attr) {
+                attributes[attr.name.toLowerCase()] = attr.value;
+            });
+            return {
+                nodeName: element.nodeName.toLowerCase(),
+                attributes: attributes,
+                tag: element.outerHTML,
+                html: element.innerHTML,
+                text: element.innerText,
+                x: bounds.left,
+                y: bounds.top,
+                width: bounds.width,
+                height: bounds.height,
+                visible: this.visible(selector)
+            };
+        };
+
+        /**
          * Retrieves a single DOM element matching a given XPath expression.
          *
-         * @param  String  expression  The XPath expression
+         * @param  String            expression  The XPath expression
+         * @param  HTMLElement|null  scope       Element to search child elements within
          * @return HTMLElement or null
          */
-        this.getElementByXPath = function getElementByXPath(expression) {
-            var a = document.evaluate(expression, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        this.getElementByXPath = function getElementByXPath(expression, scope) {
+            scope = scope || this.options.scope;
+            var a = document.evaluate(expression, scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
             if (a.snapshotLength > 0) {
                 return a.snapshotItem(0);
             }
@@ -406,12 +437,14 @@
         /**
          * Retrieves all DOM elements matching a given XPath expression.
          *
-         * @param  String  expression  The XPath expression
+         * @param  String            expression  The XPath expression
+         * @param  HTMLElement|null  scope       Element to search child elements within
          * @return Array
          */
-        this.getElementsByXPath = function getElementsByXPath(expression) {
+        this.getElementsByXPath = function getElementsByXPath(expression, scope) {
+            scope = scope || this.options.scope;
             var nodes = [];
-            var a = document.evaluate(expression, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+            var a = document.evaluate(expression, scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
             for (var i = 0; i < a.snapshotLength; i++) {
                 nodes.push(a.snapshotItem(i));
             }
@@ -464,6 +497,25 @@
                 case 1:  return getSingleValue(inputs[0]);
                 default: return getMultipleValues(inputs);
             }
+        };
+
+        /**
+         * Retrieves a given form all of its field values.
+         *
+         * @param  String  selector  A DOM CSS3/XPath selector
+         * @return Object
+         */
+        this.getFormValues = function getFormValues(selector) {
+            var form = this.findOne(selector);
+            var values = {};
+            var self = this;
+            [].forEach.call(form.elements, function(element) {
+                var name = element.getAttribute('name');
+                if (name) {
+                    values[name] = self.getFieldValue(name);
+                }
+            });
+            return values;
         };
 
         /**
@@ -592,7 +644,7 @@
                 } else if (typeof data === "string") {
                     dataString = data;
                 }
-                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             }
             xhr.send(method === "POST" ? dataString : null);
             return xhr.responseText;
@@ -606,6 +658,7 @@
          * @param  mixed                 value  The field value to set
          */
         this.setField = function setField(field, value) {
+            /*jshint maxcomplexity:99 */
             var logValue, fields, out;
             value = logValue = (value || "");
             if (field instanceof NodeList) {
