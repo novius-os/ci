@@ -20,21 +20,21 @@ casper.viewport(1024, 768);
 
 casper.then(function launch() {
     this.waitForSelector('a[data-launcher*=noviusos_page]', (function() {
-        this.test.assertSelectorHasText('a[data-launcher*=noviusos_page]', 'Pages', 'Have Pages launcher');
+        this.test.assertSelectorHasText('a[data-launcher*=noviusos_page]', 'Webpages', 'Have Webpages launcher');
         this.click('a[data-launcher*=noviusos_page]');
     }), (function() {
-        error('Timeout reached. No Page launcher ?');
+        error('Timeout reached. No Webpages launcher ?');
     }));
 });
 
 casper.then(function appdeskPage() {
     casper.waitFor(function () {
-        return tabSelected('Pages');
+        return tabSelected('Webpages');
     }, function() {
-        this.test.assertTitle('Pages', 'Appdesk Pages is loaded');
+        this.test.assertTitle('Webpages', 'Appdesk Webpages is loaded');
         this.clickLabel('Add a page', 'span');
     }, function() {
-        error("Timeout reached. No Appdesk Pages ?");
+        error("Timeout reached. No Appdesk Webpages ?");
     });
 });
 
