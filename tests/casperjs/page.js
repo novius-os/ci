@@ -1,6 +1,6 @@
 var pathlogin = casper.cli.get(0).replace('page.js', 'login.js'),
     error = function(message) {
-        casper.capture('error.png', {
+        casper.capture('page-error.png', {
             top: 0,
             left: 0,
             width: 1024,
@@ -15,8 +15,6 @@ var pathlogin = casper.cli.get(0).replace('page.js', 'login.js'),
     };
 
 require(pathlogin);
-
-casper.viewport(1024, 768);
 
 casper.then(function launch() {
     this.waitForSelector('a[data-launcher*=noviusos_page]', (function() {
@@ -34,7 +32,7 @@ casper.then(function appdeskPage() {
         this.test.assertTitle('Webpages', 'Appdesk Webpages is loaded');
         this.clickLabel('Add a page', 'span');
     }, function() {
-        error("Timeout reached. No Appdesk Webpages ?");
+        error('Timeout reached. No Appdesk Webpages ?');
     });
 });
 
@@ -50,7 +48,7 @@ casper.then(function addAPage() {
             this.clickLabel('Add', 'span');
         });
     }, function() {
-        error("Timeout reached. No add page form ?");
+        error('Timeout reached. No add page form ?');
     });
 });
 
@@ -65,7 +63,7 @@ casper.then(function addAPageOK() {
         });
         this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .nos-ostabs-actions .nos-ostabs-close');
     }, function() {
-        error("Timeout reached. No update page form ?");
+        error('Timeout reached. No update page form ?');
     });
 });
 
@@ -80,7 +78,7 @@ casper.then(function appdeskCreatedOK() {
         this.test.assertSelectorHasText('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page');
         this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a');
     }, function() {
-        error("Timeout reached. No reload appdesk insert ?");
+        error('Timeout reached. No reload appdesk insert ?');
     });
 });
 
@@ -96,7 +94,7 @@ casper.then(function editPage() {
             this.clickLabel('Save', 'span');
         });
     }, function() {
-        error("Timeout reached. No update page form ?");
+        error('Timeout reached. No update page form ?');
     });
 });
 
@@ -106,7 +104,7 @@ casper.then(function editPageOK() {
         this.click('.nos-notification .ui-icon-close');
         this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .nos-ostabs-actions .nos-ostabs-close');
     }, function() {
-        error("Timeout reached. Page not updated ?");
+        error('Timeout reached. Page not updated ?');
     });
 });
 
@@ -121,7 +119,7 @@ casper.then(function appdeskUpdatedOK() {
         this.test.assertSelectorHasText('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page modified');
         this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) th span.ui-icon-triangle-1-s');
     }, function() {
-        error("Timeout reached. No reload appdesk after update ?");
+        error('Timeout reached. No reload appdesk after update ?');
     });
 });
 
@@ -129,7 +127,7 @@ casper.then(function appdeskContextMenu() {
     casper.waitForSelector('.nos-ostabs-panel:not(.nos-ostabs-hide) .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash', function() {
         this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash');
     }, function() {
-        error("Timeout reached. No context menu open ?");
+        error('Timeout reached. No context menu open ?');
     });
 });
 
@@ -138,7 +136,7 @@ casper.then(function popupDeletion() {
         this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
         this.click('.ui-dialog button.ui-state-error');
     }, function() {
-        error("Timeout reached. No context menu open ?");
+        error('Timeout reached. No context menu open ?');
     });
 });
 
@@ -147,7 +145,7 @@ casper.then(function deletionOK() {
         this.test.assertSelectorHasText('.nos-notification', 'The page has been deleted.', 'Notification open');
         this.click('.nos-notification .ui-icon-close');
     }, function() {
-        error("Timeout reached. Page not updated ?");
+        error('Timeout reached. Page not updated ?');
     });
 });
 
@@ -161,7 +159,7 @@ casper.then(function appdeskDeletionOK() {
     }, function() {
         this.test.assertDoesntExist('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page deleted');
     }, function() {
-        error("Timeout reached. No reload appdesk after delete ?");
+        error('Timeout reached. No reload appdesk after delete ?');
     });
 });
 
