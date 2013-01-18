@@ -82,11 +82,11 @@ casper.then(function appManager() {
         return tabSelected('Applications manager');
     }, function() {
         this.test.assertTitle('Applications manager', 'Applications manager is loaded');
-    }), (function() {
+    }, function() {
         this.debugPage();
         this.test.fail("Timeout reached. No Applications manager ?");
         this.test.done();
-    }));
+    });
 });
 
 casper.run(function() {
