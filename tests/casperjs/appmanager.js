@@ -21,7 +21,7 @@ var pathlogin = casper.cli.get(0).replace('appmanager.js', 'login.js'),
             casper.then(function step2() {
                 this.waitForSelector('a[data-app*=\'"' + app.name + '"\'] span.ui-icon-arrowthick-1-s', (function() {
                     this.test.assertSelectorHasText('a[data-app*=\'"' + app.name + '"\']', 'Uninstall', app.title + ' installed');
-                    this.test.assertSelectorHasText('.nos-notification', 'Installation successful');
+                    this.test.assertSelectorHasText('.nos-notification', 'Great, a new app! Installed and ready to use.');
                     this.click('.nos-notification .ui-icon-close');
                     apps_index++;
                     app_install();
