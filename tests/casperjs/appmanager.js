@@ -39,7 +39,7 @@ require(pathlogin);
 
 casper.then(function launch() {
     this.waitForSelector('a[data-launcher*=noviusos_appmanager]', (function() {
-        this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Application manager', 'Have application manager launcher');
+        this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Applications manager', 'Have application manager launcher');
         this.click('a[data-launcher*=noviusos_appmanager]');
     }), (function() {
         this.debugPage();
