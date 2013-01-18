@@ -1,7 +1,5 @@
 var BASE_URL = casper.cli.get('base_url');
 
-casper.viewport(1024, 768);
-
 casper.start(BASE_URL + 'admin/nos/login/reset', function login() {
     this.waitForSelector('#login', function() {
         this.test.assertExists('#login form', 'Login form is found');
@@ -14,6 +12,8 @@ casper.start(BASE_URL + 'admin/nos/login/reset', function login() {
         this.test.fail("Timeout reached. No login form ?");
     });
 });
+
+casper.viewport(1024, 768);
 
 casper.then(function appstab() {
     this.waitForSelector('.nos-ostabs-appstab a', function() {
