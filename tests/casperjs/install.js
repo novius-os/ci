@@ -2,7 +2,11 @@ var BASE_URL = casper.cli.get('base_url'),
     DB_HOST = casper.cli.get('host') || 'localhost',
     DB_USER = casper.cli.get('user') || 'root',
     DB_PASS = casper.cli.get('password') || '',
-    DB_NAME = casper.cli.get('db') || 'novius_os';
+    DB_NAME = casper.cli.get('db') || 'novius_os',
+    tabSelected = function(title) {
+        var tab = casper.getElementInfo('.nos-ostabs-selected .nos-ostabs-label');
+        return tab && tab.text == title;
+    };
 
 casper.start(BASE_URL + 'install.php', function step1() {
     this.waitForSelector('form input[type=submit][value="Move on to the next step"]', (function() {
@@ -74,7 +78,9 @@ casper.then(function login() {
 });
 
 casper.then(function appManager() {
-    this.waitForSelector("#nos-ostabs-1", (function() {
+    casper.waitFor(function () {
+        return tabSelected('Applications manager');
+    }, function() {
         this.test.assertTitle('Applications manager', 'Applications manager is loaded');
     }), (function() {
         this.debugPage();
