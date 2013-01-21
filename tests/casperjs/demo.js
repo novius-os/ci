@@ -8,7 +8,7 @@ casper.start('http://demo.novius-os.org/admin/nos/login', function login() {
 
 casper.then(function noviusos() {
     this.waitFor(function () {
-        return this.nosTabSelected('Applications manager');
+        return this.nosTabSelected('Novius OS');
     }, function() {
         this.test.assertTitle('Novius OS', 'Novius OS admin homepage title is the one expected');
     }, function() {
