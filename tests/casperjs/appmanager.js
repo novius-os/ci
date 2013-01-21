@@ -1,5 +1,4 @@
-var pathlogin = casper.cli.get(0).replace('appmanager.js', 'login.js'),
-    apps = [
+var apps = [
         {name:'noviusos_appwizard', title:'App Wizard'},
         {name:'noviusos_blognews', title:'Blog / News'},
         {name:'noviusos_blog', title:'Blog'},
@@ -26,48 +25,31 @@ var pathlogin = casper.cli.get(0).replace('appmanager.js', 'login.js'),
                     apps_index++;
                     app_install();
                 }), (function() {
-                    this.debugPage();
-                    this.test.fail('Timeout reached. No button ' + app.title + ' Uninstall ?');
-                    this.test.done();
+                    this.nosError('Timeout reached. No button ' + app.title + ' Uninstall ?');
                 }));
             });
         }
-    },
-    error = function(message) {
-        casper.capture('appmanager-error.png', {
-            top: 0,
-            left: 0,
-            width: 1024,
-            height: 768
-        });
-        casper.test.fail(message);
-        casper.test.done();
-    },
-    tabSelected = function(title) {
-        var tab = casper.getElementInfo('.nos-ostabs-selected .nos-ostabs-label');
-        return tab && tab.text == title;
     };
-;
 
-require(pathlogin);
+casper.nosLogin();
 
 casper.then(function launch() {
     this.waitForSelector('a[data-launcher*=noviusos_appmanager]', (function() {
         this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Applications manager', 'Have application manager launcher');
         this.click('a[data-launcher*=noviusos_appmanager]');
     }), function() {
-        error('Timeout reached. No Applications manager launcher ?');
+        this.nosError('Timeout reached. No Applications manager launcher ?');
     });
 });
 
 casper.then(function step1() {
     casper.waitFor(function () {
-        return tabSelected('Applications manager');
+        return this.nosTabSelected('Applications manager');
     }, function() {
         this.test.assertTitle('Applications manager', 'Applications manager is loaded');
         app_install();
     }, function() {
-        error('Timeout reached. No tab Applications manager ?');
+        this.nosError('Timeout reached. No tab Applications manager ?');
     });
 });
 

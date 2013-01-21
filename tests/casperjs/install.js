@@ -1,29 +1,14 @@
-var BASE_URL = casper.cli.get('base_url'),
-    DB_HOST = casper.cli.get('host') || 'localhost',
+var DB_HOST = casper.cli.get('host') || 'localhost',
     DB_USER = casper.cli.get('user') || 'root',
     DB_PASS = casper.cli.get('password') || '',
-    DB_NAME = casper.cli.get('db') || 'novius_os',
-    error = function(message) {
-        casper.capture('install-error.png', {
-            top: 0,
-            left: 0,
-            width: 1024,
-            height: 768
-        });
-        casper.test.fail(message);
-        casper.test.done();
-    },
-    tabSelected = function(title) {
-        var tab = casper.getElementInfo('.nos-ostabs-selected .nos-ostabs-label');
-        return tab && tab.text == title;
-    };
+    DB_NAME = casper.cli.get('db') || 'novius_os';
 
 casper.start(BASE_URL + 'install.php', function step1() {
     this.waitForSelector('form input[type=submit][value="Move on to the next step"]', (function() {
         this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
         this.click('form input[type=submit][value="Move on to the next step"]');
     }), function() {
-        error('Timeout reached. No first step ?');
+        this.nosError('Timeout reached. No first step ?');
     });
 });
 
@@ -37,7 +22,7 @@ casper.then(function step2() {
             database: DB_NAME
         }, true);
     }), function() {
-        error('Timeout reached. No second step ?');
+        this.nosError('Timeout reached. No second step ?');
     });
 });
 
@@ -52,7 +37,7 @@ casper.then(function step3() {
             password_confirmation: 'longpassword'
         }, true);
     }), function() {
-        error('Timeout reached. No third step ?');
+        this.nosError('Timeout reached. No third step ?');
     });
 });
 
@@ -61,7 +46,7 @@ casper.then(function step4() {
         this.test.assertTextExists('Setup contexts', 'Step 4 loaded');
         this.click('a[href="admin/?tab=admin/noviusos_appmanager/appmanager"]');
     }), function() {
-        error('Timeout reached. No fourth step ?');
+        this.nosError('Timeout reached. No fourth step ?');
     });
 });
 
@@ -73,17 +58,17 @@ casper.then(function login() {
             password : 'longpassword'
         }, true);
     }), function() {
-        error('Timeout reached. No login form ?');
+        this.nosError('Timeout reached. No login form ?');
     });
 });
 
 casper.then(function appManager() {
-    casper.waitFor(function () {
-        return tabSelected('Applications manager');
+    this.waitFor(function () {
+        return this.nosTabSelected('Applications manager');
     }, function() {
         this.test.assertTitle('Applications manager', 'Applications manager is loaded');
     }, function() {
-        error('Timeout reached. No Applications manager ?');
+        this.nosError('Timeout reached. No Applications manager ?');
     });
 });
 
