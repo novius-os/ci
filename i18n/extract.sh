@@ -45,14 +45,13 @@ extract_app ../../novius-os framework $1 core.php
 extract_core_app noviusos_page $1
 extract_core_app noviusos_user $1
 extract_core_app noviusos_media $1
-extract_core_app noviusos_help $1
 extract_core_app noviusos_appmanager $1
 
 extract_local_app noviusos_blognews $1
 extract_local_app noviusos_blog $1
 extract_local_app noviusos_news $1
-extract_local_app noviusos_blognews $1
 extract_local_app noviusos_form $1
 extract_local_app noviusos_comments $1
 extract_local_app noviusos_appwizard $1
 extract_local_app noviusos_slideshow $1
+extract_local_app noviusos_templates_basic $1

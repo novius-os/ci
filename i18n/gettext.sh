@@ -67,7 +67,7 @@ do
     # -o    = write output to specified file
     # --no-wrap     = do not break long lines
     # --omit-header = don't write header with 'msgid ""' entry
-	xgettext -Lphp -c --no-wrap -i --omit-header -o $FILE.po $FILE;
+	xgettext -Lphp -c --no-wrap -i --from-code=utf-8 -o $FILE.po $FILE;
 
     if [ -f $FILE.po ]
     then
