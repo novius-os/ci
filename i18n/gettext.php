@@ -114,6 +114,10 @@ foreach ($files as $file) {
             if (substr($line, 0, 6) == 'msgstr') {
                 $msgstr[] = substr(trim(substr($line, 6)), 1, -1);
             }
+            // Multi-line texts
+            if (substr($line, 0, 1) == '"' && substr($line, -1) == '"') {
+                $msgstr[0] .= substr(trim($line), 1, -1);
+            }
         }
     }
 }

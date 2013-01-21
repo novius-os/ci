@@ -29,7 +29,7 @@ function extract_app() {
 	echo ---------------------------------------- $1/$2 $3 $4
 	./gettext.sh $1/$2 $3 $4
 	mkdir generated/$2
-	cp lang generated/$2 -R
+	cp lang/* generated/$2 -R
 	rm -rf lang
 }
 
@@ -53,5 +53,9 @@ extract_local_app noviusos_news $1
 extract_local_app noviusos_form $1
 extract_local_app noviusos_comments $1
 extract_local_app noviusos_appwizard $1
-extract_local_app noviusos_slideshow $1
 extract_local_app noviusos_templates_basic $1
+extract_local_app noviusos_slideshow $1
+
+
+# Delete .php files (only keep .po)
+find generated -iname "*.php" -exec rm {} \;
