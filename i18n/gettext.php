@@ -101,7 +101,7 @@ foreach ($files as $file) {
             $msgid = array();
             $msgstr = array();
         } else {
-            // #, fuzzy
+            $line = str_replace('\\n', '\\\\n', trim($line));
             if (substr($line, 0, 2) == '#.') {
                 $msgcomment[] = trim(substr($line, 3));
             }
@@ -109,14 +109,16 @@ foreach ($files as $file) {
                 $msgusage[] = str_replace(CWD.'/', '', substr($line, 3));
             }
             if (substr($line, 0, 5) == 'msgid') {
+                $last = 'msgid';
                 $msgid[] = substr(trim(substr($line, 5)), 1, -1);
             }
             if (substr($line, 0, 6) == 'msgstr') {
+                $last = 'msgstr';
                 $msgstr[] = substr(trim(substr($line, 6)), 1, -1);
             }
             // Multi-line texts
             if (substr($line, 0, 1) == '"' && substr($line, -1) == '"') {
-                $msgstr[0] .= substr(trim($line), 1, -1);
+                ${$last}[0] .= trim(substr($line, 1, -1));
             }
         }
     }
