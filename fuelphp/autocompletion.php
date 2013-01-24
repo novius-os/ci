@@ -36,7 +36,6 @@ class Database_Expression extends Fuel\Core\Database_Expression {}
 class Database_Query extends Fuel\Core\Database_Query {}
 abstract class Database_Result extends Fuel\Core\Database_Result {}
 class Database_Transaction extends Fuel\Core\Database_Transaction {}
-class Fieldset_Field extends Fuel\Core\Fieldset_Field {}
 class File_Handler_Directory extends Fuel\Core\File_Handler_Directory {}
 class File_Handler_File extends Fuel\Core\File_Handler_File {}
 class File_Area extends Fuel\Core\File_Area {}
