@@ -71,7 +71,8 @@ foreach ($files as $file) {
             }
             // Multi-line texts
             if (substr($line, 0, 1) == '"' && substr($line, -1) == '"') {
-                ${$last}[0] .= trim(substr($line, 1, -1));
+                // Don't trim here!
+                ${$last}[0] .= substr($line, 1, -1);
             }
         }
     }
