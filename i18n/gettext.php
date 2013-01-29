@@ -134,7 +134,9 @@ foreach ($dicts as $dict_name => $messages) {
             } else {
                 $msgusage = $dict_name;
             }
-            $unused[$msgid] = array('str' => $msgstr, 'comment' => '', 'usage' => $msgusage);
+            if ($msgusage != 'metadata') {
+                $unused[$msgid] = array('str' => $msgstr, 'comment' => '', 'usage' => $msgusage);
+            }
         }
 
         if (!isset($found[$dict_name][$msgid]) && $dict_name != 'all') {
@@ -255,14 +257,19 @@ foreach ($found as $dict_name => $messages) {
 echo "\n";
 
 foreach ($found as $dict_name => $messages) {
+    if (empty($found[$dict_name])) {
+        return;
+    }
     echo "   $dict_name:\n";
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict_php($found[$dict_name]));
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.po', $sprint_dict_po($found[$dict_name]));
 }
 
-echo "   'unused'\n";
-file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict_php($unused));
-file_put_contents('lang/'.LANG.'/unused.po', $sprint_dict_po($unused));
+if (!empty($unused)) {
+    echo "   'unused'\n";
+    file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict_php($unused));
+    file_put_contents('lang/'.LANG.'/unused.po', $sprint_dict_po($unused));
+}
 
 
 $stats = array(
@@ -299,12 +306,14 @@ foreach ($found as $dict_name => $messages) {
 }
 
 // Maximum width should be approx 40 letters
-$div = round($max / 40);
-foreach ($found as $dict_name => $messages) {
-    $stat = dict_stat($messages);
-    printf("   %13s: %s\n", $dict_name, str_repeat('=', round($stat['word_count'] / $div)));
+if ($max > 0) {
+    $div = ceil($max / 40);
+    foreach ($found as $dict_name => $messages) {
+        $stat = dict_stat($messages);
+        printf("   %13s: %s\n", $dict_name, str_repeat('=', round($stat['word_count'] / $div)));
+    }
+    echo "\n";
 }
-echo "\n";
 
 
 /*

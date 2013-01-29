@@ -30,6 +30,15 @@ function extract_app() {
 	./gettext.sh $1/$2 $3 $4
 	mkdir generated/$2
 	cp lang/* generated/$2 -R
+	if [ -f generated/$2/$3/unused.po ]
+	then
+	    if [ ! -d generated/unused_$3 ]
+	    then
+	        mkdir generated/unused_$3
+	    fi
+
+	    mv generated/$2/$3/unused.po generated/unused_$3/$2.po
+	fi
 	rm -rf lang
 }
 
