@@ -68,3 +68,5 @@ extract_local_app noviusos_slideshow $1
 
 # Delete .php files (only keep .po)
 find generated -iname "*.php" -exec rm {} \;
+
+echo "The files are available in the 'generated' folder"

@@ -132,9 +132,6 @@ $sprint_dict_php = function ($dict) {
     return $out;
 };
 
-is_dir('lang') || mkdir('lang');
-is_dir('lang/'.LANG) || mkdir('lang/'.LANG);
-
 $dict = array();
 foreach ($found as $dict_name => $messages) {
     $dict_unused = array();
