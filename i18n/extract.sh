@@ -1,7 +1,10 @@
 
 if [ -z "$1" ]
   then
-    echo "Please set a lang"
+    echo "usage: extract.sh <lang>"
+    echo ""
+    echo "This will extract the translations found in Novius OS as .po files."
+    echo ""
     exit
 fi
 
@@ -69,4 +72,6 @@ extract_local_app noviusos_slideshow $1
 # Delete .php files (only keep .po)
 find generated -iname "*.php" -exec rm {} \;
 
-echo "The files are available in the 'generated' folder"
+echo ""
+echo "The .po files are now available in the 'generated' folder."
+echo ""

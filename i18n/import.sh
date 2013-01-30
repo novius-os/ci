@@ -1,9 +1,19 @@
 
 if [ -z "$1" ]
   then
-    echo "Please set a lang"
+    echo "usage: import.sh <lang>"
+    echo ""
+    echo "This will import .po files from the import folder into Novius OS."
+    echo ""
     exit
 fi
+
+if [ -d import ]
+then
+    echo "Please create the 'import' folder and put the translations inside."
+    echo ""
+fi
+
 
 ROOT=$(pwd)/import
 
