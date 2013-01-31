@@ -1,7 +1,6 @@
 #!/bin/bash
 
-echo -n "Enter the directory name where you want to install Novius OS (default novius-os) :"
-read dir
+dir=$1
 if [ -z "$dir" ]
 then
 	dir="novius-os"
