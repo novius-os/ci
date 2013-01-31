@@ -1,11 +1,11 @@
 #!/bin/bash
 
 echo -n "Enter the directory name where you want to install Novius OS (default novius-os) :"
-read dir
-echo $dir
-if [ -z "$dir" ]
+read dirnovius
+echo $dirnovius
+if [ -z "$dirnovius" ]
 then
-	dir="novius-os"
+	dirnovius="novius-os"
 fi
 u=$USER
 g=`id -g $USER`
