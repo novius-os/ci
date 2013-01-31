@@ -31,3 +31,6 @@ chmod a+w local/data/config
 chmod a+w public/cache
 chmod a+w public/cache/media
 chmod a+w public/media
+
+cd ..
+sudo rm -f install.sh
