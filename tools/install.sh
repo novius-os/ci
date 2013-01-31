@@ -1,16 +1,16 @@
-#bin/bash
+#!/bin/bash
 
 echo -n "Enter the directory name where you want to install Novius OS (default novius-os) :"
-read dirnovius
-echo $dirnovius
-if [ -z "$dirnovius" ]
+read dir
+echo $dir
+if [ -z "$dir" ]
 then
-	dirnovius="novius-os"
+	dir="novius-os"
 fi
 u=$USER
 g=`id -g $USER`
 sudo mkdir $dir
-sudo sh -c "chown $u:$g $dir"
+sudo chown $u:$g $dir
 git clone --recursive git://github.com/novius-os/novius-os.git $dir
 
 cd $dir
