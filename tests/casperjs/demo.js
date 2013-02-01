@@ -18,7 +18,7 @@ casper.then(function noviusos() {
 
 casper.then(function appdesk() {
     this.waitForSelector(".ui-sortable", function() {
-        this.test.assertExists('#apps a[href="admin/noviusos_blog/appdesk"]', 'Launcher blog exist and sortable');
+        this.test.assertExists('#apps a[data-launcher*=noviusos_blog]', 'Launcher blog exist and sortable');
     }, function() {
         this.nosError('Timeout reached. No launcher sortable ?');
     });
