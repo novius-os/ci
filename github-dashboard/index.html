@@ -6,16 +6,18 @@
     <script src="http://code.jquery.com/jquery-1.8.2.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(function() {
-            var $ul = $('ul');
+            var $table = $('table');
+            $('<tr><th>Repo</th><th>Branch</th><th>Issues</th></tr>').appendTo($table);
             $.ajax({
                 url: "https://api.github.com/users/novius-os/repos",
                 dataType: "jsonp",
                 success: function(returndata) {
                     $.each(returndata.data, function() {
                         if (!this.fork && this.master_branch) {
-                            $('<li></li>')
-                                .text(this.name + ' : ' + this.master_branch)
-                                .appendTo($ul);
+                            var $tr = $('<tr></tr>');
+                            $('<td></td>').text(this.name).appendTo($tr);
+                            $('<td></td>').text(this.master_branch).appendTo($tr);
+                            $tr.appendTo($table);
                             console.log(this);
                         }
                     });
@@ -23,8 +25,17 @@
             });
         });
     </script>
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 1px 5px;
+        }
+    </style>
 </head>
 <body>
-<ul></ul>
+<table></table>
 </body>
 </html>
