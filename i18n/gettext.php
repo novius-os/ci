@@ -140,7 +140,8 @@ foreach ($dicts as $dict_name => $messages) {
         }
 
         if (!isset($found[$dict_name][$msgid]) && $dict_name != 'all') {
-            $found[$dict_name][$msgid] = array('str' => $msgstr, 'comment' => 'Overwritten', 'usage' => '');
+            // Don't re-write old strings that no longer appear in the code
+            //$found[$dict_name][$msgid] = array('str' => $msgstr, 'comment' => 'Overwritten', 'usage' => '');
         }
     }
 }
