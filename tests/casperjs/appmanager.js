@@ -15,7 +15,7 @@ var apps = [
         var app = apps[apps_index];
         if (app) {
             if (app.required) {
-                casper.test.assertSelectorExists('label[data-app*=\'"' + app.name + '"\']', app.title + ' is not installed though it is required by other installed applications.');
+                casper.test.assertSelectorExists('label[data-app*=\'"' + app.name + '"\']', app.title + ' is automatically installed as it is required by other installed applications.');
             } else {
                 casper.test.assertSelectorHasText('a[data-app*=\'"' + app.name + '"\']', 'Install', app.title + ' is not in available applications.');
                 casper.click('a[data-app*=\'"' + app.name + '"\']');
