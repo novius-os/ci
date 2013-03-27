@@ -105,7 +105,7 @@ class Inflector extends Fuel\Core\Inflector {}
 class Input extends Fuel\Core\Input {}
 class LangException extends Fuel\Core\LangException {}
 class Lang extends Fuel\Core\Lang {}
-class Log extends Fuel\Core\Log {}
+class Log extends Log\Log {}
 class Markdown extends Fuel\Core\Markdown {}
 class Migrate extends Fuel\Core\Migrate {}
 class Model extends Fuel\Core\Model {}
