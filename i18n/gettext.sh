@@ -14,7 +14,7 @@ rm -rf $ROOT/po
 mkdir po
 cd $ROOT/$1
 
-echo `date +%H:%M:%S` Creating tar
+echo `date +%H:%M:%S`  Creating tar
 
 tar cfz $ROOT/po/novius-os.tar.gz \
   --exclude .git \
@@ -30,13 +30,13 @@ tar cfz $ROOT/po/novius-os.tar.gz \
   --exclude vendor \
   .
 
-echo `date +%H:%M:%S` Extracting tar
+echo `date +%H:%M:%S`  Extracting tar
 
 cd $ROOT/po
 tar xfz novius-os.tar.gz
 rm novius-os.tar.gz
 
-echo `date +%H:%M:%S` Searching for translations
+echo `date +%H:%M:%S`  Searching for translations
 echo -n "         "
 
 FILES=`find $ROOT/po -type f`
@@ -84,12 +84,12 @@ done
 exec 1<&6 2<&1 6<&-
 echo "";
 
-echo `date +%H:%M:%S` $GENERATED_PO .po files generated
+echo `date +%H:%M:%S`  $GENERATED_PO .po files generated
 
 cd $ROOT
 php gettext.php $LANG ${3:-}
 
-echo `date +%H:%M:%S` .po files converted to .php array files
+echo `date +%H:%M:%S`  .po files converted to .php array files
 
 # Cleanup!
 rm -rf $ROOT/po

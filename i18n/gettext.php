@@ -16,11 +16,13 @@ if (!empty($argv[2])) {
     );
 }
 
+$dicts = array();
+$found = array();
+$all = array();
+
 // Retrieve existing translations from the lang directory
 $directory = new RecursiveDirectoryIterator(CWD.'/lang/'.LANG);
 $files = new RecursiveIteratorIterator($directory);
-$dicts = array();
-$all = array();
 foreach ($files as $file) {
     $filename =  $file->getFilename();
     if (substr($filename, -4) != '.php') {
@@ -36,12 +38,11 @@ foreach ($files as $file) {
     }
 }
 $dicts['all'] = $all;
+$all = array();
 
 // Retrieve translations found in the source code
 $directory = new RecursiveDirectoryIterator(CWD);
 $files = new RecursiveIteratorIterator($directory);
-$found = array();
-$all = array();
 $current = '';
 foreach ($files as $file) {
     $filename =  $file->getFilename();
@@ -125,6 +126,24 @@ foreach ($files as $file) {
     }
 }
 
+
+// Retrieve metadata translations
+// We translate manually metadata into french, which is the base file where to find metadata strings
+if (LANG != 'en' && is_file(CWD.'/lang/fr/metadata.lang.php')) {
+    $metadata = include CWD.'/lang/fr/metadata.lang.php';
+    $merge = is_file(CWD.'/lang/'.LANG.'/metadata.lang.php') ? include CWD.'/lang/'.LANG.'/metadata.lang.php' : array();
+    $found['metadata'] = array();
+
+    // Except the french translations are incorrect, we want the ones for the current lang
+    foreach (array_keys($metadata) as $key) {
+        $found['metadata'][$key] = array(
+            'str' => !empty($merge[$key]) ? $merge[$key] : '',
+            'comment' => '',
+            'usage' => '',
+        );
+    }
+}
+
 $unused = array();
 foreach ($dicts as $dict_name => $messages) {
     foreach ($messages as $msgid => $msgstr) {
@@ -176,9 +195,6 @@ $sprint_dict_php = function ($dict) {
 
     $stat = dict_stat($dict);
 
-    echo '      '.$stat['stat_msg']."\n";
-    echo '      '.$stat['stat_word']."\n\n";
-
     $out = "<?php\n\n";
     $out .= "// Generated on ".date('d/m/Y H:i:s')."\n\n";
     $out .= "// ".$stat['stat_msg']."\n";
@@ -204,9 +220,6 @@ $sprint_dict_php = function ($dict) {
 $sprint_dict_po = function ($dict) {
 
     $stat = dict_stat($dict);
-
-    echo '      '.$stat['stat_msg']."\n";
-    echo '      '.$stat['stat_word']."\n\n";
 
     $out = "\n";
     $out .= "# Generated on ".date('d/m/Y H:i:s')."\n\n";
@@ -262,6 +275,10 @@ foreach ($found as $dict_name => $messages) {
         return;
     }
     echo "   $dict_name:\n";
+    $stat = dict_stat($found[$dict_name]);
+    echo '      '.$stat['stat_msg']."\n";
+    echo '      '.$stat['stat_word']."\n\n";
+
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict_php($found[$dict_name]));
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.po', $sprint_dict_po($found[$dict_name]));
 }
