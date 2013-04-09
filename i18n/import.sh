@@ -3,15 +3,16 @@ if [ -z "$1" ]
   then
     echo "usage: import.sh <lang>"
     echo ""
-    echo "This will import .po files from the import folder into Novius OS."
+    echo "This will import .po files from the 'import' folder into Novius OS."
     echo ""
     exit
 fi
 
-if [ -d import ]
+if [ ! -d import ]
 then
     echo "Please create the 'import' folder and put the translations inside."
     echo ""
+    exit
 fi
 
 
@@ -34,8 +35,16 @@ for app in ${!APPLICATIONS[*]}
 do
     path=${APPLICATIONS[$app]}
     cd $ROOT/$app
+    echo "$app"
     for file in $(find $1 -type f -name '*.php')
     do
+		if [ ! -d $ROOT/../../../$path/lang/$1 ]
+		then
+		    echo "  -> creating directory $path/lang/$1"
+			mkdir $ROOT/../../../$path/lang/$1
+		fi
+		echo "  -> copying $file"
         cp $ROOT/$app/$file $ROOT/../../../$path/lang/$file
     done
+    echo ""
 done
