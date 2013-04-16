@@ -1,28 +1,13 @@
 #!/bin/bash
 
-if [ -z "$1" ]
-then
-    echo "usage: gettext.sh <application_path> <lang>"
-    echo ""
-    echo "This will extract the translations found in Novius OS as .po files."
-    echo ""
-    exit
-fi
-
 ROOT=$(pwd)
-LANG=${2:-en}
 
-#if [ ! -d "$ROOT/$1/lang/$LANG" ];
-#then
-#	echo $ROOT/$1/lang/$LANG must exists
-#	exit
-#fi
-
-rm -rf $ROOT/po
+# Generating .po files into the 'po' dir
+rm -r po 2> /dev/null
 mkdir po
-cd $ROOT/$1
 
-echo `date +%H:%M:%S`  Creating tar
+# Copy app files into the 'po' dir
+cd $ROOT/$1
 
 tar cfz $ROOT/po/novius-os.tar.gz \
   --exclude .git \
@@ -38,18 +23,16 @@ tar cfz $ROOT/po/novius-os.tar.gz \
   --exclude vendor \
   .
 
-echo `date +%H:%M:%S`  Extracting tar
-
 cd $ROOT/po
 tar xfz novius-os.tar.gz
 rm novius-os.tar.gz
 
-echo `date +%H:%M:%S`  Searching for translations
-echo -n "         "
+# Extract .po files from the .php source files
+echo -n "  -> extracting "
 
 FILES=`find $ROOT/po -type f`
 
-# Saves stdout into file descriptor #6
+# Saves stdout into file descriptor #6, then disable stdout
 exec 6>&1
 exec 1>/dev/null 2>&1
 
@@ -90,15 +73,8 @@ done
 
 # Restore stdout and close file descriptor #6
 exec 1<&6 2<&1 6<&-
-echo "";
 
-echo `date +%H:%M:%S`  $GENERATED_PO .po files generated
+echo " $GENERATED_PO .po files generated"
 
+# Cleanup
 cd $ROOT
-php gettext.php $LANG
-
-echo `date +%H:%M:%S`  .po files converted to .php array files
-
-# Cleanup!
-rm -rf $ROOT/po
-

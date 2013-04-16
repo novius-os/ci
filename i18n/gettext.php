@@ -277,28 +277,22 @@ foreach ($found as $dict_name => $messages) {
 }
 
 
-echo "\n";
-
+// Write dictionary files
 foreach ($found as $dict_name => $messages) {
     if (empty($found[$dict_name])) {
         return;
     }
-    echo "   $dict_name:\n";
-    $stat = dict_stat($found[$dict_name]);
-    echo '      '.$stat['stat_msg']."\n";
-    echo '      '.$stat['stat_word']."\n\n";
-
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', $sprint_dict_php($found[$dict_name]));
     file_put_contents('lang/'.LANG.'/'.$dict_name.'.po', $sprint_dict_po($found[$dict_name]));
 }
 
 if (!empty($unused)) {
-    echo "   'unused'\n";
     file_put_contents('lang/'.LANG.'/unused.lang.php', $sprint_dict_php($unused));
     file_put_contents('lang/'.LANG.'/unused.po', $sprint_dict_po($unused));
 }
 
 
+// Write stats
 $stats = array(
     'word_count' => 0,
     'word_count_translated' => 0,
@@ -306,7 +300,13 @@ $stats = array(
     'msg_count_translated' => 0,
 );
 foreach ($found as $dict_name => $messages) {
+    if (empty($found[$dict_name])) {
+        return;
+    }
+
     $stat = dict_stat($messages);
+    //printf("   %20s:  % 3s%%  -% 4s words out of %s\n", $dict_name, $stat['word_translated_percent'], $stat['word_count_translated'], $stat['word_count']);
+
     $stats['word_count'] += $stat['word_count'];
     $stats['word_count_translated'] += $stat['word_count_translated'];
     $stats['msg_count'] += $stat['msg_count'];
@@ -319,11 +319,26 @@ foreach ($found as $dict_name => $messages) {
     $stats['stat_word'] = $stats['word_count_translated']." out of ".$stats['word_count']." words are translated (".$stats['msg_translated_percent']."%).";
 }
 
-echo "\n";
-echo "   TOTAL:\n";
-echo "      ".$stats['stat_msg']."\n";
-echo "      ".$stats['stat_word']."\n";
+//printf("   %20s:  % 3s%%  -% 4s words out of %s\n", 'TOTAL', $stats['word_translated_percent'], $stats['word_count_translated'], $stats['word_count']);
 
+$width = 50;
+printf("  %s [%-{$width}s] %3s%%\n", LANG, str_repeat('-', $stats['word_translated_percent'] / 100 * $width), $stats['word_translated_percent']);
+
+if (!empty($argv[2])) {
+
+    $dict = 'dict ->';
+    $max = 0;
+    foreach ($found as $dict_name => $messages) {
+        $max = max($max, strlen($dict_name));
+    }
+    foreach ($found as $dict_name => $messages) {
+        $stat = dict_stat($messages);
+        printf("  $dict %-{$max}s: %s words\n", $dict_name, $stat['word_count']);
+        $dict = '       ';
+    }
+}
+
+/*
 echo "\n";
 echo "   SIZE:\n";
 $max = 0;
@@ -341,6 +356,7 @@ if ($max > 0) {
     }
     echo "\n";
 }
+*/
 
 
 /*

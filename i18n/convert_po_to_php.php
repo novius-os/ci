@@ -107,9 +107,6 @@ $sprint_dict_php = function ($dict) {
 
     $stat = dict_stat($dict);
 
-    echo '      '.$stat['stat_msg']."\n";
-    echo '      '.$stat['stat_word']."\n\n";
-
     $out = "<?php\n\n";
     $out .= "// Generated on ".date('d/m/Y H:i:s')."\n\n";
     $out .= "// ".$stat['stat_msg']."\n";
@@ -155,7 +152,58 @@ foreach ($found as $dict_name => $messages) {
 echo "\n";
 
 foreach ($found as $dict_name => $messages) {
-    echo "   $dict_name:\n";
     file_put_contents($dict_name.'.lang.php', $sprint_dict_php($found[$dict_name]));
 }
 
+$dicts = array();
+foreach ($found as $dict_name => $messages) {
+    $stat = dict_stat($messages);
+    list($app, $lang, $file) = explode('/', str_replace(CWD.'/', '', $dict_name).'/', 3);
+    if (substr($app, 0, 7) == 'unused_') {
+        continue;
+    }
+    $dicts[] = array(
+        'app' => $app,
+        'lang' => $lang,
+        'file' => rtrim($file, '/'),
+        'stat' => $stat,
+    );
+}
+
+$width = 50;
+$max_app = 0;
+$max_file = 0;
+foreach ($dicts as $name => $dict) {
+    $max_app = max($max_app, strlen($dict['app']));
+    $max_file = max($max_file, strlen($dict['file']));
+}
+
+$current_app = '';
+$current_lang = '';
+foreach ($dicts as $dict) {
+    // App
+    if ($current_app != $dict['app']) {
+        $current_app = $dict['app'];
+        printf("\n%-{$max_app}s", $current_app);
+    } else {
+        printf("% {$max_app}s", '');
+    }
+
+    echo '  ';
+
+    // Lang
+    if ($current_lang != $dict['lang']) {
+        $current_lang = $dict['lang'];
+        echo $current_lang;
+    } else {
+        echo '  ';
+    }
+
+    echo '  ';
+
+    // File
+    printf("%-{$max_file}s", $dict['file']);
+
+    // Percentage
+    printf("  [%-{$width}s] %3s%%\n", str_repeat('-', $dict['stat']['word_translated_percent'] / 100 * $width), $dict['stat']['word_translated_percent']);
+}

@@ -1,3 +1,4 @@
+#!/bin/bash
 
 if [ -z "$1" ]
   then
@@ -15,16 +16,13 @@ then
     exit
 fi
 
-
-ROOT=$(pwd)/import
+ROOT=$(pwd)
 
 # Load applications
 source apps.sh
 
-# Change working directory (do this after loading the applications, or the apps.sh file won't be found)
-cd $ROOT
-
 # Convert exported .po files from Pootle to .php languages files used in Novius OS
+cd $ROOT/import
 php ../convert_po_to_php.php
 
 # Delete .po files (only keep .php)
@@ -34,17 +32,26 @@ find . -iname "*.po" -exec rm {} \;
 for app in ${!APPLICATIONS[*]}
 do
     path=${APPLICATIONS[$app]}
-    cd $ROOT/$app
+    cd $ROOT/import/$app
     echo "$app"
+
+    if [ ! -d $ROOT/import/../../../$path/lang/$1 ]
+    then
+        echo "  -> creating directory $path/lang/$1"
+        mkdir $ROOT/import/../../../$path/lang/$1
+    else
+        echo "  -> deleting existing translations from $path/lang/$1"
+        rm -r -- $ROOT/import/../../../$path/lang/$1
+        mkdir $ROOT/import/../../../$path/lang/$1
+    fi
+
     for file in $(find $1 -type f -name '*.php')
     do
-		if [ ! -d $ROOT/../../../$path/lang/$1 ]
-		then
-		    echo "  -> creating directory $path/lang/$1"
-			mkdir $ROOT/../../../$path/lang/$1
-		fi
 		echo "  -> copying $file"
-        cp $ROOT/$app/$file $ROOT/../../../$path/lang/$file
+        cp $ROOT/import/$app/$file $ROOT/import/../../../$path/lang/$file
     done
     echo ""
 done
+
+# Cleanup
+cd $ROOT

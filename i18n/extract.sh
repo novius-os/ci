@@ -1,76 +1,41 @@
+#!/bin/bash
+
+ROOT=$(pwd)
 
 if [ -z "$1" ]
 then
-    echo "usage: extract.sh <lang>"
+    echo "usage: extract.sh <application_path> <lang>"
     echo ""
-    echo "This will extract the translations found in Novius OS as .po files."
+    echo "This script extracts translations from an application into the 'generated' directory."
     echo ""
     exit
 fi
 
-rm -rf generated
-mkdir generated
+if [ ! -d $ROOT/$application_path ]
+then
+    echo "Directory '$ROOT/$application_path' not found"
+    echo ""
+    exit
+fi
 
+if [ -z "$2" ]
+then
+    echo "Please provide a lang"
+    echo ""
+    exit
+fi
 
-# 1: path
-# 2: app_name (folder)
-# 3: lang
-function extract_app() {
-	rm -rf lang
-	
-	if [ ! -d $1/$2/lang ]
-	then
-	    mkdir $1/$2/lang
-	fi
-	
-	if [ ! -d $1/$2/lang/$3 ]
-	then
-	    mkdir $1/$2/lang/$3
-	fi
-	
-	echo ---------------------------------------- $1/$2 $3
-	./gettext.sh $1/$2 $3
-	mkdir generated/$2
-	cp lang/* generated/$2 -R
-	if [ -f generated/$2/$3/unused.po ]
-	then
-	    if [ ! -d generated/unused_$3 ]
-	    then
-	        mkdir generated/unused_$3
-	    fi
+application_path=$1
+lang=$2
 
-	    mv generated/$2/$3/unused.po generated/unused_$3/$2.po
-	fi
-	rm -rf lang
-}
+# Extract translations from the source code (.po files will be generated into the 'po' dir)
+cd $ROOT
+./gettext.sh $application_path
 
-function extract_core_app() {
-	extract_app ../../novius-os/framework/applications $1 $2
-}
-function extract_local_app() {
-	extract_app ../../local/applications $1 $2
-}
+# Read 'po' dir and generate both .po and .php files into the 'generated' directory
+cd $ROOT
+./extract_lang.sh $(basename $application_path) $lang true
 
-extract_app ../../novius-os framework $1
-
-extract_core_app noviusos_page $1
-extract_core_app noviusos_user $1
-extract_core_app noviusos_media $1
-extract_core_app noviusos_appmanager $1
-
-extract_local_app noviusos_blognews $1
-extract_local_app noviusos_blog $1
-extract_local_app noviusos_news $1
-extract_local_app noviusos_form $1
-extract_local_app noviusos_comments $1
-extract_local_app noviusos_appwizard $1
-extract_local_app noviusos_templates_basic $1
-extract_local_app noviusos_slideshow $1
-
-
-# Delete .php files (only keep .po)
-find generated -iname "*.php" -exec rm {} \;
-
-echo ""
-echo "The .po files are now available in the 'generated' folder."
-echo ""
+# Cleanup
+cd $ROOT
+rm -r po 2> /dev/null
