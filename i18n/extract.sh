@@ -1,6 +1,6 @@
 
 if [ -z "$1" ]
-  then
+then
     echo "usage: extract.sh <lang>"
     echo ""
     echo "This will extract the translations found in Novius OS as .po files."
@@ -15,7 +15,6 @@ mkdir generated
 # 1: path
 # 2: app_name (folder)
 # 3: lang
-# 4: rules.php
 function extract_app() {
 	rm -rf lang
 	
@@ -29,8 +28,8 @@ function extract_app() {
 	    mkdir $1/$2/lang/$3
 	fi
 	
-	echo ---------------------------------------- $1/$2 $3 $4
-	./gettext.sh $1/$2 $3 $4
+	echo ---------------------------------------- $1/$2 $3
+	./gettext.sh $1/$2 $3
 	mkdir generated/$2
 	cp lang/* generated/$2 -R
 	if [ -f generated/$2/$3/unused.po ]
@@ -46,13 +45,13 @@ function extract_app() {
 }
 
 function extract_core_app() {
-	extract_app ../../novius-os/framework/applications $1 $2 app.php
+	extract_app ../../novius-os/framework/applications $1 $2
 }
 function extract_local_app() {
-	extract_app ../../local/applications $1 $2 app.php
+	extract_app ../../local/applications $1 $2
 }
 
-extract_app ../../novius-os framework $1 core.php
+extract_app ../../novius-os framework $1
 
 extract_core_app noviusos_page $1
 extract_core_app noviusos_user $1

@@ -1,14 +1,22 @@
 #!/bin/bash
 
-ROOT=$(pwd)
+if [ -z "$1" ]
+then
+    echo "usage: gettext.sh <application_path> <lang>"
+    echo ""
+    echo "This will extract the translations found in Novius OS as .po files."
+    echo ""
+    exit
+fi
 
+ROOT=$(pwd)
 LANG=${2:-en}
 
-if [ ! -d "$ROOT/$1/lang/$LANG" ];
-then
-	echo $ROOT/$1/lang/$LANG must exists
-	exit
-fi
+#if [ ! -d "$ROOT/$1/lang/$LANG" ];
+#then
+#	echo $ROOT/$1/lang/$LANG must exists
+#	exit
+#fi
 
 rm -rf $ROOT/po
 mkdir po
@@ -87,7 +95,7 @@ echo "";
 echo `date +%H:%M:%S`  $GENERATED_PO .po files generated
 
 cd $ROOT
-php gettext.php $LANG ${3:-}
+php gettext.php $LANG
 
 echo `date +%H:%M:%S`  .po files converted to .php array files
 

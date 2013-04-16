@@ -3,18 +3,15 @@
 define('CWD', getcwd().'/po');
 define('LANG', $argv[1]);
 
-function __($msg)
-{
-    return $msg;
-}
-
-if (!empty($argv[2])) {
-    $dict_rules = include $argv[2];
-} else {
-    $dict_rules = array(
+// Load i18n configuration file
+$config = is_file(CWD.'/lang/config.php') ? include CWD.'/lang/config.php' : array();
+$config =  $config + array(
+    'dictionaries' => array(
         'default' => false,
-    );
-}
+    ),
+);
+
+$dict_rules = $config['dictionaries'];
 
 $dicts = array();
 $found = array();
@@ -30,13 +27,19 @@ foreach ($files as $file) {
     }
     $pathname = $file->getPathname();
     $dict_name = substr(str_replace('.lang.php', '.php', str_replace(CWD.'/lang/'.LANG.'/', '', $pathname)), 0, -4);
+
     $dicts[$dict_name] = include $pathname;
-    foreach ($dicts[$dict_name] as $msgid => $msgstr) {
-        if (empty($all[$msgid])) {
-            $all[$msgid] = array($msgstr, $dict_name);
-        }
+}
+
+
+// Keep a track of all translations and which dictionary they come from
+foreach ($dicts[$dict_name] as $msgid => $msgstr) {
+    if (empty($all[$msgid])) {
+        $all[$msgid] = array($msgstr, $dict_name);
     }
 }
+
+// Creates the 'all' dictionary
 $dicts['all'] = $all;
 $all = array();
 
@@ -45,6 +48,7 @@ $directory = new RecursiveDirectoryIterator(CWD);
 $files = new RecursiveIteratorIterator($directory);
 $current = '';
 foreach ($files as $file) {
+    // Read only from .po files
     $filename =  $file->getFilename();
     if (substr($filename, -3) != '.po') {
         continue;
@@ -144,6 +148,7 @@ if (LANG != 'en' && is_file(CWD.'/lang/fr/metadata.lang.php')) {
     }
 }
 
+// Compute unused translations (previously in a dictionary, but not found in the source code anymore).
 $unused = array();
 foreach ($dicts as $dict_name => $messages) {
     foreach ($messages as $msgid => $msgstr) {
@@ -248,6 +253,7 @@ $sprint_dict_po = function ($dict) {
 is_dir('lang') || mkdir('lang');
 is_dir('lang/'.LANG) || mkdir('lang/'.LANG);
 
+// Fill in dictionaries with existing translations
 $dict = array();
 foreach ($found as $dict_name => $messages) {
     $dict_unused = array();
@@ -257,9 +263,12 @@ foreach ($found as $dict_name => $messages) {
             $dict_unused[$msgid] = array('str' => $msgstr, 'comment' => '', 'usage' => '');
             continue;
         }
-        if (isset($dicts[$dict_name][$msgid])) {
-            // Translation was found in the existing dictionnary
+        if (isset($dicts[$dict_name][$msgid]) && $dicts[$dict_name][$msgid] != '') {
+            // Translation was found in the existing dictionary
             $found[$dict_name][$msgid]['str'] = $dicts[$dict_name][$msgid];
+        } else if (isset($dicts['all'][$msgid]) && $dicts['all'][$msgid][0] != '') {
+            // Fetch translation from the 'all' dictionary (allow to move translations from a dict to another one)
+            $found[$dict_name][$msgid]['str'] = $dicts['all'][$msgid][0];
         }
     }
     if (!empty($dict_unused)) {
