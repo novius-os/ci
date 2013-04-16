@@ -1,120 +1,71 @@
 casper.nosLogin();
 
-casper.then(function launch() {
-    this.waitForSelector('a[data-launcher*=noviusos_page]', (function() {
-        this.test.assertSelectorHasText('a[data-launcher*=noviusos_page]', 'Webpages', 'Have Webpages launcher');
-        this.click('a[data-launcher*=noviusos_page]');
-    }), (function() {
-        this.nosError('Timeout reached. No Webpages launcher ?');
-    }));
+// Launch Webpages application
+casper.nosLaunch('noviusos_page', 'Webpages');
+
+// Check Webpages appdesk is opened and click on add a page
+casper.nosAppdesk('Webpages', function() {
+    this.clickLabel('Add a page', 'span');
 });
 
-casper.then(function appdeskPage() {
-    casper.waitFor(function () {
-        return this.nosTabSelected('Webpages');
-    }, function() {
-        this.test.assertTitle('Webpages', 'Appdesk Webpages is loaded');
-        this.clickLabel('Add a page', 'span');
-    }, function() {
-        this.nosError('Timeout reached. No Appdesk Webpages ?');
+// Check Add form is opened, fill form and submit
+casper.nosForm('Add a page', 'admin/noviusos_page/page/insert_update', {
+    page_title: 'New test page',
+    page_menu: '1',
+    page_menu_title: 'Test menu',
+    page_meta_title: 'Test meta',
+    page_virtual_name: 'test-url'
+}, 'Add', function() {
+    this.click(casper.nosSelectorCurrentPanel + ' img[src$="static/novius-os/admin/novius-os/img/icons/status-green.png"]');
+    this.evaluate(function() {
+        tinyMCE.activeEditor.setContent('<p>Test content</p>');
     });
 });
 
-casper.then(function addAPage() {
-    casper.waitFor(function () {
-        return this.nosTabSelected('Add a page');
+// Check adding is ok, appdesk is reloaded
+casper.nosFormOK('New test page');
+
+// Check front page
+casper.thenOpen(BASE_URL + 'test-url.html', function front() {
+    this.waitForText('New test page', function() {
+        this.test.assertHttpStatus(301);
+        this.test.assertSelectorHasText('#menu li a', 'Test menu', 'Title menu OK');
+        this.test.assertSelectorHasText('#pagename', 'New test page', 'Title OK');
+        this.test.assertTitle('Test meta', 'Title meta OK');
+        this.test.assertSelectorHasText('#content p', 'Test content', 'Content OK');
     }, function() {
-        this.test.assertTitle('Add a page', 'Add page form is loaded');
-        casper.waitForSelector('form[action$="admin/noviusos_page/page/insert_update"]', function () {
-            this.fill('form[action$="admin/noviusos_page/page/insert_update"]', {
-                page_title: 'New test page'
-            }, false);
-            this.clickLabel('Add', 'span');
-        });
-    }, function() {
-        this.nosError('Timeout reached. No add page form ?');
+        this.nosError('Timeout reached. Front page "New test page" not found ?');
     });
 });
 
-casper.then(function addAPageOK() {
-    casper.waitFor(function () {
-        return this.nosTabSelected('New test page');
-    }, function() {
-        this.test.assertTitle('New test page', 'New test page is created');
-        casper.waitForSelector('.nos-notification .ui-icon-info', function() {
-            this.test.assertSelectorExists('.nos-notification .ui-icon-info', 'Notification open');
-            this.click('.nos-notification .ui-icon-close');
-        });
-        this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .nos-ostabs-actions .nos-ostabs-close');
-    }, function() {
-        this.nosError('Timeout reached. No update page form ?');
-    });
+// Reload back-office
+casper.thenOpen(BASE_URL + 'admin/');
+
+// Check appdesk is reloaded, then click to modify page
+casper.nosAppdeskCheck('New test page', true, function() {
+    this.click(casper.nosSelectorCurrentPanel + ' tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a');
 });
 
-casper.then(function appdeskCreatedOK() {
-    casper.waitFor(function check() {
-        return this.evaluate(function() {
-            return $('.wijmo-wijgrid-innercell a').filter(function() {
-                return $.trim($(this).text()) == 'New test page';
-            }).length == 1;
-        });
-    }, function() {
-        this.test.assertSelectorHasText('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page');
-        this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a');
-    }, function() {
-        this.nosError('Timeout reached. No reload appdesk insert ?');
-    });
+// Check Update form is opened, fill form and submit
+casper.nosForm('New test page', 'admin/noviusos_page/page/insert_update/', {
+    page_title: 'New test page modified'
 });
 
-casper.then(function editPage() {
-    casper.waitFor(function () {
-        return this.nosTabSelected('New test page');
-    }, function() {
-        this.test.assertTitle('New test page', 'New test page form is loaded');
-        casper.waitForSelector('form[action*="admin/noviusos_page/page/insert_update/"]', function () {
-            this.fill('form[action*="admin/noviusos_page/page/insert_update/"]', {
-                page_title: 'New test page modified'
-            }, false);
-            this.clickLabel('Save', 'span');
-        });
-    }, function() {
-        this.nosError('Timeout reached. No update page form ?');
-    });
+// Check updating is ok, appdesk is reloaded, then click to open context menu on page
+casper.nosFormOK('New test page modified', function() {
+    this.click(casper.nosSelectorCurrentPanel + ' th span.ui-icon-triangle-1-s');
 });
 
-casper.then(function editPageOK() {
-    casper.waitForSelector('.nos-notification .ui-icon-info', function() {
-        this.test.assertSelectorExists('.nos-notification .ui-icon-info', 'Notification open');
-        this.click('.nos-notification .ui-icon-close');
-        this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .nos-ostabs-actions .nos-ostabs-close');
-    }, function() {
-        this.nosError('Timeout reached. Page not updated ?');
-    });
-});
-
-casper.then(function appdeskUpdatedOK() {
-    casper.waitFor(function check() {
-        return this.evaluate(function() {
-            return $('.wijmo-wijgrid-innercell a').filter(function() {
-                return $.trim($(this).text()) == 'New test page modified';
-            }).length == 1;
-        });
-    }, function() {
-        this.test.assertSelectorHasText('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page modified');
-        this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) th span.ui-icon-triangle-1-s');
-    }, function() {
-        this.nosError('Timeout reached. No reload appdesk after update ?');
-    });
-});
-
+// Click on delete in context menu
 casper.then(function appdeskContextMenu() {
-    casper.waitForSelector('.nos-ostabs-panel:not(.nos-ostabs-hide) .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash', function() {
-        this.click('.nos-ostabs-panel:not(.nos-ostabs-hide) .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash');
+    casper.waitForSelector(casper.nosSelectorCurrentPanel + ' .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash', function() {
+        this.click(casper.nosSelectorCurrentPanel + ' .wijmo-wijmenu-list a.ui-state-error span.ui-icon-trash');
     }, function() {
         this.nosError('Timeout reached. No context menu open ?');
     });
 });
 
+// Check deletion popup, and confirm delete
 casper.then(function popupDeletion() {
     casper.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
         this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
@@ -124,28 +75,13 @@ casper.then(function popupDeletion() {
     });
 });
 
+// Check deleting is ok
 casper.then(function deletionOK() {
-    casper.waitForSelector('.nos-notification .ui-icon-info', function() {
-        this.test.assertSelectorHasText('.nos-notification', 'The page has been deleted.', 'Notification open');
-        this.click('.nos-notification .ui-icon-close');
-    }, function() {
-        this.nosError('Timeout reached. Page not updated ?');
-    });
+    casper.nosNotificationOK('Page not deleted ?');
 });
 
-casper.then(function appdeskDeletionOK() {
-    casper.waitFor(function check() {
-        return this.evaluate(function() {
-            return $('.nos-ostabs-panel:not(.nos-ostabs-hide) .wijmo-wijgrid-innercell a').filter(function() {
-                return $.trim($(this).text()) == 'New test page modified';
-            }).length == 0;
-        });
-    }, function() {
-        this.test.assertDoesntExist('.nos-ostabs-panel:not(.nos-ostabs-hide) tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a', 'New test page deleted');
-    }, function() {
-        this.nosError('Timeout reached. No reload appdesk after delete ?');
-    });
-});
+// Check appdesk is reloaded
+casper.nosAppdeskCheck('New test page modified', false);
 
 casper.run(function() {
     this.test.done();
