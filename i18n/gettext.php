@@ -18,24 +18,26 @@ $found = array();
 $all = array();
 
 // Retrieve existing translations from the lang directory
-$directory = new RecursiveDirectoryIterator(CWD.'/lang/'.LANG);
-$files = new RecursiveIteratorIterator($directory);
-foreach ($files as $file) {
-    $filename =  $file->getFilename();
-    if (substr($filename, -4) != '.php') {
-        continue;
+if (is_dir(CWD.'/lang/'.LANG)) {
+    $directory = new RecursiveDirectoryIterator(CWD.'/lang/'.LANG);
+    $files = new RecursiveIteratorIterator($directory);
+    foreach ($files as $file) {
+        $filename =  $file->getFilename();
+        if (substr($filename, -4) != '.php') {
+            continue;
+        }
+        $pathname = $file->getPathname();
+        $dict_name = substr(str_replace('.lang.php', '.php', str_replace(CWD.'/lang/'.LANG.'/', '', $pathname)), 0, -4);
+
+        $dicts[$dict_name] = include $pathname;
     }
-    $pathname = $file->getPathname();
-    $dict_name = substr(str_replace('.lang.php', '.php', str_replace(CWD.'/lang/'.LANG.'/', '', $pathname)), 0, -4);
-
-    $dicts[$dict_name] = include $pathname;
-}
 
 
-// Keep a track of all translations and which dictionary they come from
-foreach ($dicts[$dict_name] as $msgid => $msgstr) {
-    if (empty($all[$msgid])) {
-        $all[$msgid] = array($msgstr, $dict_name);
+    // Keep a track of all translations and which dictionary they come from
+    foreach ($dicts[$dict_name] as $msgid => $msgstr) {
+        if (empty($all[$msgid])) {
+            $all[$msgid] = array($msgstr, $dict_name);
+        }
     }
 }
 
@@ -106,7 +108,11 @@ foreach ($files as $file) {
             $msgid = array();
             $msgstr = array();
         } else {
-            $line = str_replace('\\n', '\\\\n', trim($line));
+            $line = str_replace(
+                array('\\n', '\\"'),
+                array('\\\\n', '"'),
+                trim($line)
+            );
             if (substr($line, 0, 2) == '#.') {
                 $msgcomment[] = trim(substr($line, 3));
             }
