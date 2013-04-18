@@ -102,7 +102,11 @@ foreach ($files as $file) {
             $msgid = array();
             $msgstr = array();
         } else {
-            $line = str_replace('\\n', '\\\\n', trim($line));
+            $line = str_replace(
+                array('\\n', '\\"'),
+                array('\\\\n', '"'),
+                trim($line)
+            );
             if (substr($line, 0, 2) == '#.') {
                 $msgcomment[] = trim(substr($line, 3));
             }
