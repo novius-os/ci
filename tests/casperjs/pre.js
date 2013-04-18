@@ -91,11 +91,14 @@ var BASE_URL = casper.cli.get('base_url'),
                     if (othersAction) {
                         othersAction.call(this);
                     }
-                    this.clickLabel(submitLabel, 'span');
                 });
             }, function() {
                 this.nosError('Timeout reached. No "' + title + '" form ?');
             });
+        });
+
+        this.then(function form() {
+            this.clickLabel(submitLabel, 'span');
         });
     };
 

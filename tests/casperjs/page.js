@@ -17,8 +17,18 @@ casper.nosForm('Add a page', 'admin/noviusos_page/page/insert_update', {
     page_virtual_name: 'test-url'
 }, 'Add', function() {
     this.click(casper.nosSelectorCurrentPanel + ' img[src$="static/novius-os/admin/novius-os/img/icons/status-green.png"]');
-    this.evaluate(function() {
-        tinyMCE.activeEditor.setContent('<p>Test content</p>');
+
+    this.waitFor(function check() {
+        return this.evaluate(function() {
+            return tinyMCE.get(0).initialized;
+        });
+    }, function() {
+        this.evaluate(function() {
+            tinyMCE.get(0).setContent('<p>Test content</p>');
+            tinyMCE.get(0).getContent();
+        });
+    }, function() {
+        this.nosError('Timeout reached. Wysiwyg not initialized ?');
     });
 });
 
@@ -27,7 +37,7 @@ casper.nosFormOK('New test page');
 
 // Check front page
 casper.thenOpen(BASE_URL + 'test-url.html', function front() {
-    this.waitForText('New test page', function() {
+    this.waitForText('Test content', function() {
         this.test.assertHttpStatus(301);
         this.test.assertSelectorHasText('#menu li a', 'Test menu', 'Title menu OK');
         this.test.assertSelectorHasText('#pagename', 'New test page', 'Title OK');
@@ -71,7 +81,7 @@ casper.then(function popupDeletion() {
         this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
         this.click('.ui-dialog button.ui-state-error');
     }, function() {
-        this.nosError('Timeout reached. No context menu open ?');
+        this.nosError('Timeout reached. No popup deletion opened ?');
     });
 });
 
