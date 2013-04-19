@@ -1,15 +1,18 @@
 var BASE_URL = casper.cli.get('base_url'),
     capture_path = casper.cli.get('capture_path') || './',
-    test_name = casper.cli.get(0)
+    test_name = casper.cli.get(0),
     utils = require('utils');
 
 (function(casper) {
+    var logLevel = casper.cli.get('log-level');
     if (casper.cli.get('color-dummy')) {
         casper.options.colorizerType = 'Dummy';
     }
-    if (logLevel = casper.cli.get('log-level')) {
+    if (logLevel) {
         casper.options.logLevel = logLevel;
     }
+
+    casper.options.waitTimeout = 10000;
 
     test_name = test_name.split('/');
     test_name = test_name[test_name.length - 1].replace('.js', '');
@@ -66,21 +69,19 @@ var BASE_URL = casper.cli.get('base_url'),
         });
     };
 
-    casper.nosAppdesk = function nosAppdesk(title, click) {
+    casper.nosAppdeskLoad = function nosAppdeskLoad(title) {
         this.then(function appdesk() {
             this.waitFor(function () {
                 return this.nosTabSelected(title);
             }, function() {
                 this.test.assertTitle(title, 'Appdesk "' + title + '" is loaded');
-                click.call(this);
             }, function() {
                 this.nosError('Timeout reached. No Appdesk "' + title + '" ?');
             });
         });
     };
 
-    casper.nosForm = function nosForm(title, urlForm, fields, submitLabel, othersAction) {
-        submitLabel = submitLabel || 'Save';
+    casper.nosFormFill = function nosFormFill(title, urlForm, fields) {
         this.then(function form() {
             this.waitFor(function () {
                 return this.nosTabSelected(title);
@@ -88,57 +89,20 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.test.assertTitle(title, '"' + title + '" form is loaded');
                 this.waitForSelector('form[action*="' + urlForm + '"]', function () {
                     this.fill('form[action*="' + urlForm + '"]', fields, false);
-                    if (othersAction) {
-                        othersAction.call(this);
-                    }
                 });
             }, function() {
                 this.nosError('Timeout reached. No "' + title + '" form ?');
             });
         });
+    };
 
-        this.then(function form() {
-            this.clickLabel(submitLabel, 'span');
+    casper.nosFormSubmit = function nosFormSubmit() {
+        this.then(function formSubmit() {
+            this.click(this.nosSelectorCurrentPanel + ' .nos-toolbar .nos-toolbar-left button');
         });
     };
 
-    casper.nosNotificationOK = function nosNotificationOK(error) {
-        this.waitForSelector('.nos-notification .ui-icon-info', function() {
-            this.test.assertSelectorExists('.nos-notification .ui-icon-info', 'Notification open');
-            this.click('.nos-notification .ui-icon-close');
-        }, error ? function() {
-            this.nosError(error);
-        } : null);
-    };
-
-    casper.nosAppdeskCheck = function nosAppdeskCheck(title, present, click) {
-        this.then(function appdeskCheck() {
-            this.waitFor(function check() {
-                return this.evaluate(function(sel, title, present) {
-                    return $(sel + ' .wijmo-wijgrid-innercell').filter(function() {
-                        return $.trim($(this).text()) == title;
-                    }).length == present ? 1 : 0;
-                }, this.nosSelectorCurrentPanel, title, present);
-            }, function() {
-                this.test.assertEval(function(args) {
-                    return $(args.sel + ' .wijmo-wijgrid-innercell').filter(function() {
-                        return $.trim($(this).text()) == args.title;
-                    }).length == args.present ? true : false;
-                }, 'Grid row "' + title + '" ' + (present ? 'present' : 'absent'), {
-                    sel: this.nosSelectorCurrentPanel,
-                    title: title,
-                    present: present
-                });
-                if (click) {
-                    click.call(this);
-                }
-            }, function() {
-                this.nosError('Timeout reached. Appdesk not reloaded, "' + title + '" still ' + (present ? 'present' : 'absent') + ' ?');
-            });
-        });
-    };
-
-    casper.nosFormOK = function nosFormOK(title, click) {
+    casper.nosFormCheck = function nosFormCheck(title) {
         this.then(function formOK() {
             this.waitFor(function () {
                 return this.nosTabSelected(title);
@@ -151,9 +115,63 @@ var BASE_URL = casper.cli.get('base_url'),
             });
         });
 
-        this.nosAppdeskCheck(title, true, click);
+        this.nosAppdeskCheck(title, true);
     };
 
+    casper.nosNotificationOK = function nosNotificationOK(error) {
+        this.waitForSelector('.nos-notification .ui-icon-info', function() {
+            this.test.assertSelectorExists('.nos-notification .ui-icon-info', 'Notification open');
+            this.click('.nos-notification .ui-icon-close');
+        }, error ? function() {
+            this.nosError(error);
+        } : null);
+    };
+
+    casper.nosAppdeskCheck = function nosAppdeskCheck(title, present) {
+        this.then(function appdeskCheck() {
+            this.waitFor(function check() {
+                return this.evaluate(function(sel, title, present) {
+                    return $(sel + ' .wijmo-wijgrid-innercell').filter(function() {
+                        return $.trim($(this).text()) == title;
+                    }).length == present ? 1 : 0;
+                }, this.nosSelectorCurrentPanel, title, present);
+            }, function() {
+                this.test.assertEval(function(args) {
+                    return !!($(args.sel + ' .wijmo-wijgrid-innercell').filter(function () {
+                        return $.trim($(this).text()) == args.title;
+                    }).length == args.present);
+                }, 'Grid row "' + title + '" ' + (present ? 'present' : 'absent'), {
+                    sel: this.nosSelectorCurrentPanel,
+                    title: title,
+                    present: present
+                });
+            }, function() {
+                this.nosError('Timeout reached. Appdesk not reloaded, "' + title + '" still ' + (present ? 'present' : 'absent') + ' ?');
+            });
+        });
+    };
+
+    casper.nosPublish = function nosPublish() {
+        this.click(this.nosSelectorCurrentPanel + ' img[src$="static/novius-os/admin/novius-os/img/icons/status-green.png"]');
+    };
+
+    casper.nosWaitWysiwyg = function nosWaitWysiwyg(then) {
+        this.waitFor(function check() {
+            return this.evaluate(function() {
+                return tinyMCE.get(0).initialized;
+            });
+        }, then, function() {
+            this.nosError('Timeout reached. Wysiwyg not initialized ?');
+        });
+    };
+
+    casper.nosAccordionOpen = function nosAccordionOpen(title) {
+        this.evaluate(function(sel, title) {
+            $(sel + ' h3.wijmo-wijaccordion-header').filter(function() {
+                return $.trim($(this).text()) == title;
+            }).click();
+        }, this.nosSelectorCurrentPanel, title);
+    };
 
     casper.start();
     casper.viewport(1024, 768);

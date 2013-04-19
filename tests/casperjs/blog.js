@@ -3,121 +3,146 @@ casper.nosLogin();
 // Launch Blog application
 casper.nosLaunch('noviusos_blog', 'Blog');
 
-// Check Blog appdesk is opened and click on add a category
-casper.nosAppdesk('Blog', function() {
+// Check Blog appdesk is opened
+casper.nosAppdeskLoad('Blog');
+
+// Click on add a category
+casper.then(function() {
     this.clickLabel('Add a category', 'a');
 });
 
-// Check Add form is opened, fill form and submit
-casper.nosForm('Add a category', 'admin/noviusos_blog/category/insert_update', {
+// Check Add form is opened, fill form
+casper.nosFormFill('Add a category', 'admin/noviusos_blog/category/insert_update', {
     cat_title: 'New category',
     cat_virtual_name: 'new-category'
-}, 'Add');
+});
 
-// Check adding is ok, appdesk is reloaded, click on add a post
-casper.nosFormOK('New category', function() {
+// Submit Add form
+casper.nosFormSubmit();
+
+// Check adding is ok, appdesk is reloaded
+casper.nosFormCheck('New category');
+
+// Click on add a post
+casper.then(function() {
     this.clickLabel('Add a post', 'span');
 });
 
-// Check Add form is opened, fill form and submit
-casper.nosForm('Add a post', 'admin/noviusos_blog/post/insert_update', {
+// Check Add form is opened
+casper.nosFormFill('Add a post', 'admin/noviusos_blog/post/insert_update', {
     post_title: 'New blog post'
-}, 'Add', function() {
+});
 
-    // Set blog post to published
-    this.click(casper.nosSelectorCurrentPanel + ' img[src$="static/novius-os/admin/novius-os/img/icons/status-green.png"]');
+// Set blog post to published
+casper.then(function() {
+    this.nosPublish();
+});
 
-    // Set blog post content
-    this.waitFor(function check() {
-        return this.evaluate(function() {
-            return tinyMCE.get(0).initialized;
-        });
-    }, function() {
+// Set blog post content
+casper.then(function() {
+    this.nosWaitWysiwyg(function() {
         this.evaluate(function() {
             tinyMCE.get(0).setContent('<p>Blog content</p>');
             tinyMCE.get(0).getContent();
         });
-    }, function() {
-        this.nosError('Timeout reached. Wysiwyg not initialized ?');
     });
+});
 
-    // Set a tag for blog post
-    this.evaluate(function(sel) {
-        $(sel + ' h3.wijmo-wijaccordion-header').filter(function() {
-            return $.trim($(this).text()) == 'Tags';
-        }).click();
-    }, casper.nosSelectorCurrentPanel);
-    this.waitForSelector(casper.nosSelectorCurrentPanel + ' .tagit-new input', function() {
-        this.sendKeys(casper.nosSelectorCurrentPanel + ' .tagit-new input', 'tag-test');
+// Set a tag for blog post
+casper.then(function() {
+    this.nosAccordionOpen('Tags');
+    this.waitForSelector(this.nosSelectorCurrentPanel + ' .tagit-new input', function() {
+        this.sendKeys(this.nosSelectorCurrentPanel + ' .tagit-new input', 'tag-test');
     }, function() {
         this.nosError('Timeout reached. Tag inspector not loaded ?');
     });
+});
 
-    // Set a category for blog post
-    this.evaluate(function(sel) {
-        $(sel + ' h3.wijmo-wijaccordion-header').filter(function() {
-            return $.trim($(this).text()) == 'Categories';
-        }).click();
-    }, casper.nosSelectorCurrentPanel);
+// Set a category for blog post
+casper.then(function() {
+    this.nosAccordionOpen('Categories');
     this.waitFor(function check() {
         return this.evaluate(function(sel) {
-            return $(sel + ' .wijmo-wijaccordion-content .wijmo-wijgrid-innercell span').filter(function() {
+            return $(sel + ' .wijmo-wijaccordion-content .wijmo-wijgrid-innercell span').filter(function () {
                 return $.trim($(this).text()) == 'New category';
             }).length == 1;
         }, this.nosSelectorCurrentPanel);
     }, function() {
         this.evaluate(function(sel) {
-            $(sel + ' .wijmo-wijaccordion-content .wijmo-wijgrid-innercell span').filter(function() {
+            var $input = $(sel + ' .wijmo-wijaccordion-content .wijmo-wijgrid-innercell span').filter(function() {
                     return $.trim($(this).text()) == 'New category';
-                })
-                .parent('td')
-                .prev('td')
-                .find('input')
-                .click();
-        }, casper.nosSelectorCurrentPanel);
+                }).parents('tr').find('input')
+
+            $input.get(0).checked = true;
+            $input.triggerHandler('click');
+        }, this.nosSelectorCurrentPanel);
     }, function() {
         this.nosError('Timeout reached. Categories inspector not loaded ?');
     });
 });
 
+// Set a media for blog post
+casper.then(function() {
+    this.mouseEvent('mouseover', this.nosSelectorCurrentPanel + ' .ui-widget.ui-inputfilethumb');
+    this.clickLabel('Pick an image', 'span');
+
+    this.waitForSelector('.ui-dialog th[title="Pick"]', function() {
+        this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Pick an image');
+        this.click('.ui-dialog th[title="Pick"]');
+    }, function() {
+        this.nosError('Timeout reached. No popup "Pick an image" opened ?');
+    });
+});
+
+// Submit Add form
+casper.nosFormSubmit();
+
 // Check adding is ok, appdesk is reloaded
-casper.nosFormOK('New blog post');
+casper.nosFormCheck('New blog post');
 
 // Check front
-/*casper.thenOpen(BASE_URL + 'test-url.html', function front() {
-    this.waitForText('Test content', function() {
-        this.test.assertHttpStatus(301);
-        this.test.assertSelectorHasText('#menu li a', 'Test menu', 'Title menu OK');
-        this.test.assertSelectorHasText('#pagename', 'New test page', 'Title OK');
-        this.test.assertTitle('Test meta', 'Title meta OK');
-        this.test.assertSelectorHasText('#content p', 'Test content', 'Content OK');
+casper.thenOpen(BASE_URL + 'new-blog-post.html?_cache=0', function front() {
+    this.waitForText('Blog content', function() {
+        this.test.assertSelectorHasText('#pagename', 'New blog post', 'Title OK');
+        this.test.assertTitle('New test page modified - New blog post', 'Title meta OK');
+        this.test.assertResourceExists('cache/media/new-folder/logo-novius-os/', 'Logo was loaded');
+        this.test.assertSelectorHasText('.blognews_tags', 'tag-test', 'Tag OK');
+        this.test.assertSelectorHasText('.blognews_categories', 'New category', 'Category OK');
     }, function() {
-        this.nosError('Timeout reached. Front page "New test page" not found ?');
+        this.nosError('Timeout reached. Front page "New blog post" not found ?');
     });
 });
 
 // Reload back-office
 casper.thenOpen(BASE_URL + 'admin/');
-*/
 
-// Check appdesk is reloaded, then click to modify page
-casper.nosAppdeskCheck('New blog post', true, function() {
-    this.click(casper.nosSelectorCurrentPanel + ' tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a');
+// Check appdesk is reloaded
+casper.nosAppdeskCheck('New blog post', true);
+
+// Click to modify page
+casper.then(function() {
+    this.click(this.nosSelectorCurrentPanel + ' tr.wijmo-wijgrid-row .wijmo-wijgrid-innercell a');
 });
 
-// Check Update form is opened, fill form and submit
-casper.nosForm('New blog post', 'admin/noviusos_blog/post/insert_update/', {
+// Check Update form is opened
+casper.nosFormFill('New blog post', 'admin/noviusos_blog/post/insert_update/', {
     post_title: 'Updated blog post'
 });
 
-// Check updating is ok, appdesk is reloaded, then click to open context menu on page
-casper.nosFormOK('Updated blog post', function() {
-    this.click(casper.nosSelectorCurrentPanel + ' .wijmo-wijsplitter-h-panel2 th span.ui-icon-trash');
+// Submit Update form
+casper.nosFormSubmit();
+
+// Check updating is ok, appdesk is reloaded
+casper.nosFormCheck('Updated blog post');
+
+// Click to open context menu on page
+casper.then(function() {
+    this.click(this.nosSelectorCurrentPanel + ' .wijmo-wijsplitter-h-panel2 th span.ui-icon-trash');
 });
 
 // Check deletion popup, and confirm delete
 casper.then(function popupDeletion() {
-    casper.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
+    this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
         this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the post ‘Updated blog post’');
         this.click('.ui-dialog button.ui-state-error');
     }, function() {
@@ -127,7 +152,7 @@ casper.then(function popupDeletion() {
 
 // Check deleting is ok
 casper.then(function deletionOK() {
-    casper.nosNotificationOK('Blog post not deleted ?');
+    this.nosNotificationOK('Blog post not deleted ?');
 });
 
 // Check appdesk is reloaded
