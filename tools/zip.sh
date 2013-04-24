@@ -17,7 +17,7 @@ else
     BRANCH=$1
     cd novius-os-zip/novius-os
     git checkout $1
-    git submodule update --recursive
+    git submodule update --recursive --init
     cd ..
 fi
 
