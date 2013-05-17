@@ -9,6 +9,7 @@
     <exclude-pattern>hooks/*</exclude-pattern>
     <exclude-pattern>logs/*</exclude-pattern>
     <exclude-pattern>ci/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
     <exclude-pattern>local/config/*</exclude-pattern>
     <exclude-pattern>local/metadata/*</exclude-pattern>
 
