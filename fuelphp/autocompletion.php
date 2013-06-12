@@ -95,7 +95,6 @@ class FtpConnectionException extends Fuel\Core\FtpConnectionException {}
 class FtpFileAccessException extends Fuel\Core\FtpFileAccessException {}
 class Ftp extends Fuel\Core\Ftp {}
 class FuelException extends Fuel\Core\FuelException {}
-class Fuel extends Fuel\Core\Fuel {}
 class Html extends Fuel\Core\Html {}
 abstract class HttpException extends Fuel\Core\HttpException {}
 class HttpNotFoundException extends Fuel\Core\HttpNotFoundException {}
