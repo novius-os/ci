@@ -3,9 +3,18 @@ var DB_HOST = casper.cli.get('host') || 'localhost',
     DB_PASS = casper.cli.get('password') || '',
     DB_NAME = casper.cli.get('db') || 'novius_os';
 
-casper.start(BASE_URL + 'install.php', function step1() {
-    this.waitForSelector('form input[type=submit][value="Move on to the next step"]', (function() {
-        this.test.assertExists('form input[type=submit][value="Move on to the next step"]', 'Move on to the next step is found');
+casper.start(BASE_URL + 'install.php', function step0() {
+    this.waitForSelector('a[href="install.php?step=1"]', (function() {
+        this.test.assertTextExists('Thank you for downloading Novius OS', 'Install loaded');
+        this.click('a[href^=install.php]');
+    }), function() {
+        this.nosError('Timeout reached. No landing step ?');
+    });
+});
+
+casper.then(function step1() {
+    this.waitForSelector('form input[type=submit][value="Proceed to “Step 2: database configuration”"]', (function() {
+        this.test.assertExists('form input[type=submit][value="Proceed to “Step 2: database configuration”"]', 'Move on to the next step is found');
         this.click('form input[type=submit][value="Move on to the next step"]');
     }), function() {
         this.nosError('Timeout reached. No first step ?');
