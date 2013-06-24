@@ -20,8 +20,11 @@ var BASE_URL = casper.cli.get('base_url'),
     casper.nosSelectorCurrentPanel = '.nos-ostabs-panel:not(.nos-ostabs-hide)';
 
     casper.nosTabSelected = function nosTabSelected(title) {
-        var tab = this.getElementInfo('.nos-ostabs-selected .nos-ostabs-label');
-        return tab && tab.text == title;
+        if (this.exists('.nos-ostabs-selected .nos-ostabs-label')) {
+            var tab = this.getElementInfo('.nos-ostabs-selected .nos-ostabs-label');
+            return tab.text == title;
+        }
+        return false;
     };
 
     casper.nosError = function nosError(message) {
