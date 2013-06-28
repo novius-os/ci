@@ -1,0 +1,161 @@
+#!/bin/bash
+#
+#   imageshack_upload.sh
+#
+#   Copyright (c) 2006 by Benoit Chesneau <benoit@bchesneau.info>
+#
+#   This program is free software; you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation; either version 2 of the License, or
+#   (at your option) any later version.
+#
+#   This program is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with this program; if not, write to the Free Software
+#   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+#   USA.
+#
+
+myver='0.3'
+CURL=$(which curl)
+
+IMAGE_LINK="1"
+THUMB_LINK="0"
+BBCODE="0"
+
+function usage() {
+	echo "imageshack_upload $myver"
+	echo "usage: $0 [options] <root>"
+	echo
+	echo "This script allow you to send image to http://www.imageshack.us"
+	echo "in command line"
+	echo
+	echo "Options are in"
+	echo "   -a : show image and thumbnail link."
+	echo "   -b : show image BBcode. With -t, show BBcode for thumbnail linking"
+	echo "        to full-size image."
+	echo "   -h|--help : show this help message."
+	echo "   -i : show only image link (same as no option)."
+	echo "   -t : show only thumbnail link."
+	echo "   -v|--version: print version string"
+	echo
+	echo "example: imageshack_upload.sh myimage.png [myimage2.png ...]"
+	echo
+}
+
+if [ $# -lt 1 ]; then
+	usage
+	exit 1
+fi
+
+if [ "$1" = "-h" -o "$1" = "--help" ]; then
+	usage
+	exit 0
+fi
+
+if [ "$1" = "-v" -o "$1" = "--version" ]; then
+	echo "$myver"
+	exit 0
+fi
+
+# Read arguments
+while getopts "abit" option
+do
+	case $option in
+		a )
+			IMAGE_LINK="1"
+			THUMB_LINK="1"
+			;;
+		b )
+			BBCODE="1"
+			;;
+		i )
+			IMAGE_LINK="1"
+			THUMB_LINK="0"
+			;;
+		t )
+			IMAGE_LINK="0"
+			THUMB_LINK="1"
+			;;
+	esac
+done
+shift $(($OPTIND - 1))
+
+TMPFILE=$(mktemp -d /tmp/imageshack.XXXXXXXXXX) || exit 1
+rm -rf $TMPFILE
+touch $TMPFILE
+
+
+function cleanup() {
+        rm -rf $TMPFILE
+        [ "$1" ] && exit $1
+}
+
+function trim() {
+	echo $1;
+}
+
+function get_mimetype() {
+	img="$1"
+
+	# get the last word from "file --mime-type", with ' ' as the separator
+	file --mime-type $img | awk -F ' '  '{ print $(NF) }'
+}
+
+function upload() {
+	img="$1"
+
+	if ! [ -f "$img" ]; then
+		echo "Error: file don't exist"
+		exit 1
+	fi
+
+	MIMETYPE=$(get_mimetype $img)
+	$CURL -H Expect: \
+		-F fileupload="@${img};type=$MIMETYPE" \
+		-F key=$IMAGESHACK_DEVELOPER_KEY \
+		-F xml=yes \
+		http://www.imageshack.us/upload_api.php > $TMPFILE
+
+	URL=$(trim $(cat $TMPFILE | grep -E "<image_link>(.*)</image_link>" | \
+	    sed 's|<image_link>\(.*\)</image_link>|\1|'))
+	THUMB=$(trim $(cat $TMPFILE | grep -E "<thumb_link>(.*)</thumb_link>" | \
+	    sed 's|<thumb_link>\(.*\)</thumb_link>|\1|'))
+
+	if [ $IMAGE_LINK = "1" ]; then
+		echo "Url of image on imageshack:"
+		echo "$URL"
+		if [ $BBCODE = "1" ]; then
+			echo "BBcode of image on imageshack:"
+			echo "[img]$URL[/img]"
+		fi
+	fi
+
+	if [ $THUMB_LINK = "1" ]; then
+		echo "Url of thumbshot on imageshack:"
+		echo "$THUMB"
+		if [ $BBCODE = "1" ]; then
+			echo "BBcode of thumbnail + link to full-size image on imageshack:"
+			echo "[url=$URL][img]$THUMB[/img][/url]"
+		fi
+	fi
+
+	rm -f $TMPFILE
+}
+
+if [ -z "$IMAGESHACK_DEVELOPER_KEY" ]; then
+	echo "imageshack_upload uses ImageShack API, so a developer key is required."
+	echo "It should be specified in enviroment variable IMAGESHACK_DEVELOPER_KEY."
+	exit 1
+fi
+
+for i in "$@"
+do
+	upload "$i"
+done
+
+cleanup
