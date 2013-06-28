@@ -1,5 +1,6 @@
 #! /bin/sh
 
+DIR='../../../novius-os'
 DB_HOST='localhost'
 DB_NAME='novius_os'
 DB_USER='root'
@@ -31,16 +32,16 @@ clone ()
 {
 	cd $ROOT
 
-	sudo mv novius-os-test/.idea ./
-	sudo rm -rf novius-os-test
+	sudo mv $DIR/.idea ./
+	sudo rm -rf $DIR
 	CLONE='git clone'
 	if [ -n "$1" ]
 	then
 		CLONE="$CLONE -b $1"
 	fi
-	echo "$CLONE --depth 100 --recursive git://github.com/novius-os/novius-os.git novius-os-test"
-	sh -c "$CLONE --depth 100 --recursive git://github.com/novius-os/novius-os.git novius-os-test"
-	cd novius-os-test
+	echo "$CLONE --depth 100 --recursive git://github.com/novius-os/novius-os.git $DIR"
+	sh -c "$CLONE --depth 100 --recursive git://github.com/novius-os/novius-os.git $DIR"
+	cd $DIR
 	sh -c "$CLONE git://github.com/novius-os/ci.git"
 
 	mv ../.idea ./
@@ -70,7 +71,7 @@ init ()
 {
 	db
 
-	cd ${ROOT}novius-os-test
+	cd $ROOT$DIR
 
 	sudo rm -rf ../report
 	sudo rm -rf local/config/development
@@ -92,7 +93,7 @@ init ()
 
 install ()
 {
-	cd ${ROOT}novius-os-test
+	cd $ROOT$DIR
 
 	./ci/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='lnx3.lyon.novius.fr' --user='nos_base' --password='novius' --db=$DB_NAME
 	temp=$?
@@ -117,7 +118,7 @@ install ()
 
 run ()
 {
-	cd ${ROOT}novius-os-test
+	cd $ROOT$DIR
 
 	wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
 
@@ -203,7 +204,7 @@ run ()
 
 demo ()
 {
-	cd ${ROOT}novius-os-test
+	cd $ROOT$DIR
 
 	./ci/casperjs/bin/casperjs test ./ci/tests/casperjs/demo.js --xunit=../report/casper-demo.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js
 	return $?
