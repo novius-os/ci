@@ -6,16 +6,16 @@ var DB_HOST = casper.cli.get('host') || 'localhost',
 casper.start(BASE_URL + 'install.php', function step0() {
     this.waitForSelector('a[href^="install.php"]', (function() {
         this.test.assertTextExists('Thank you for downloading Novius OS', 'Install loaded');
-        this.click('a[href^="install.php"]');
+        this.click('a[href="install.php?step=1"]');
     }), function() {
         this.nosError('Timeout reached. No landing step ?');
     });
 });
 
 casper.then(function step1() {
-    this.waitForSelector('form input[type=submit][value="Proceed to “Step 2: database configuration”"]', (function() {
-        this.test.assertExists('form input[type=submit][value^="Proceed to “Step 2: database configuration”"]', 'Proceed to step 2 is found');
-        this.click('form input[type=submit][value="Proceed to “Step 2: database configuration”"]');
+    this.waitForSelector('a[href="install.php?step=2"]', (function() {
+        this.test.assertTextExists('Step 1 / 4', 'Proceed to step 2 is found');
+        this.click('a[href="install.php?step=2"]');
     }), function() {
         this.nosError('Timeout reached. No first step ?');
     });
@@ -23,7 +23,7 @@ casper.then(function step1() {
 
 casper.then(function step2() {
     this.waitForSelector('form', (function() {
-        this.test.assertTextExists('database configuration', 'Step 2 loaded');
+        this.test.assertTextExists('Step 2 / 4', 'Step 2 loaded');
         this.fill('form', {
             hostname: DB_HOST,
             username: DB_USER,
@@ -37,7 +37,7 @@ casper.then(function step2() {
 
 casper.then(function step3() {
     this.waitForSelector('form', (function() {
-        this.test.assertTextExists('create the first administrator account', 'Step 3 loaded');
+        this.test.assertTextExists('Step 3 / 4', 'Step 3 loaded');
         this.fill('form', {
             name: 'Test',
             firstname: 'Test',
@@ -51,8 +51,17 @@ casper.then(function step3() {
 });
 
 casper.then(function step4() {
+    this.waitForSelector('a[href="install.php?step=5"]', (function() {
+        this.test.assertTextExists('Step 4 / 4', 'Step 4 loaded');
+        this.click('a[href="install.php?step=5"]');
+    }), function() {
+        this.nosError('Timeout reached. No fourth step ?');
+    });
+});
+
+casper.then(function step5() {
     this.waitForSelector('a[href="admin/?tab=admin/noviusos_appmanager/appmanager"]', (function() {
-        this.test.assertTextExists('Setup contexts', 'Step 4 loaded');
+        this.test.assertTextExists('Congratulations', 'Step 4 loaded');
         this.click('a[href="admin/?tab=admin/noviusos_appmanager/appmanager"]');
     }), function() {
         this.nosError('Timeout reached. No fourth step ?');
