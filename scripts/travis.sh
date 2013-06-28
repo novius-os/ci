@@ -25,3 +25,4 @@ export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start
 
 DISPLAY=:99.0 ci/scripts/test.sh run
+exit $?

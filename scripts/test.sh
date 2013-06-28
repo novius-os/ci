@@ -53,7 +53,7 @@ install ()
 {
 	cd $ROOT
 
-	ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='lnx3.lyon.novius.fr' --user='nos_base' --password='novius' --db=$DB_NAME
+	ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='$DB_HOST' --user='$DB_USER' --password='$DB_PASSWORD' --db=$DB_NAME
 	temp=$?
 	if [ $temp != 0 ]
 	then
