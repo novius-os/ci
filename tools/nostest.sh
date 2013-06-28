@@ -16,11 +16,11 @@ help ()
 {
     echo "Test suite for Novius OS"
     echo ""
-    echo "    nos-test clone [branch]   - clone Novius OS in specific branch";
-    echo "    nos-test init             - initialise Novius OS test instance";
-    echo "    nos-test install [wizard] - runs begin of tests suite, install and appmanager";
-    echo "    nos-test run [stepname]   - runs complete tests suite";
-    echo "    nos-test demo             - Novius OS demo test";
+    echo "    nostest clone [branch]   - clone Novius OS in specific branch";
+    echo "    nostest init             - initialise Novius OS test instance";
+    echo "    nostest install [wizard] - runs begin of tests suite, install and appmanager";
+    echo "    nostest run [stepname]   - runs complete tests suite";
+    echo "    nostest demo             - Novius OS demo test";
 }
 
 db ()
