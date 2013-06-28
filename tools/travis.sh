@@ -1,3 +1,4 @@
 #! /bin/sh
 
-"DISPLAY=:99.0 test.sh run"
+ROOT=$(pwd)/
+"DISPLAY=:99.0 $ROOTtest.sh run"
