@@ -5,4 +5,4 @@ export IMAGESHACK_DEVELOPER_KEY
 
 wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
 
-./imageshack-upload /tmp/logo-novius-os.png
+../vendor/imageshack-upload /tmp/logo-novius-os.png
