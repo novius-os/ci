@@ -87,7 +87,6 @@ class Fieldset extends Fuel\Core\Fieldset {}
 class FileAccessException extends Fuel\Core\FileAccessException {}
 class OutsideAreaException extends Fuel\Core\OutsideAreaException {}
 class InvalidPathException extends Fuel\Core\InvalidPathException {}
-class File extends Fuel\Core\File {}
 class Finder extends Fuel\Core\Finder {}
 class Form extends Fuel\Core\Form {}
 class Format extends Fuel\Core\Format {}
@@ -104,7 +103,6 @@ class Inflector extends Fuel\Core\Inflector {}
 class Input extends Fuel\Core\Input {}
 class LangException extends Fuel\Core\LangException {}
 class Lang extends Fuel\Core\Lang {}
-class Log extends Log\Log {}
 class Markdown extends Fuel\Core\Markdown {}
 class Migrate extends Fuel\Core\Migrate {}
 class Model extends Fuel\Core\Model {}
