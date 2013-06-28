@@ -1,6 +1,6 @@
 #! /bin/sh
 
-DIR='../../../novius-os'
+DIR='novius-os-test'
 DB_HOST='localhost'
 DB_NAME='novius_os'
 DB_USER='root'
@@ -14,18 +14,13 @@ fi
 
 help ()
 {
-    echo "Test suite for Novius OS"
+    echo "Script Novius OS for test suite "
     echo ""
     echo "    nostest clone [branch]   - clone Novius OS in specific branch";
+    echo "    nostest demo             - Novius OS demo test";
     echo "    nostest init             - initialise Novius OS test instance";
     echo "    nostest install [wizard] - runs begin of tests suite, install and appmanager";
     echo "    nostest run [stepname]   - runs complete tests suite";
-    echo "    nostest demo             - Novius OS demo test";
-}
-
-db ()
-{
-	$(mysql -h $DB_HOST -u $DB_USER --password=$DB_PASSWORD -e "DROP DATABASE IF EXISTS $DB_NAME;CREATE DATABASE $DB_NAME DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;")
 }
 
 clone ()
@@ -67,141 +62,6 @@ clone ()
 	db
 }
 
-init ()
-{
-	db
-
-	cd $ROOT$DIR
-
-	sudo rm -rf ../report
-	sudo rm -rf local/config/development
-	sudo rm -f local/config/db.config.php
-	sudo rm -f local/config/crypt.config.php
-	sudo rm -f local/config/contexts.config.php
-	sudo rm -f local/config/contexts.config.php
-	sudo rm -rf local/metadata/*
-	sudo rm -rf local/cache/fuelphp/*
-	sudo rm -rf local/data/media/*
-	sudo rm -rf local/cache/media/*
-	sudo rm -rf local/cache/fuelphp/*
-	sudo rm -rf local/data/config/*
-	sudo rm -rf public/cache/media/*
-	sudo rm -rf public/media/*
-
-	echo "Instance Novius OS test reseted"
-}
-
-install ()
-{
-	cd $ROOT$DIR
-
-	./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='lnx3.lyon.novius.fr' --user='nos_base' --password='novius' --db=$DB_NAME
-	temp=$?
-	if [ $temp != 0 ]
-	then
-		echo $temp
-		return $temp
-	else
-		if [ "$1" = "wizard" ]
-		then
-			return $temp
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/appmanager.js --xunit=../report/casper-appmanager.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return $temp
-		fi
-	fi
-}
-
-run ()
-{
-	cd $ROOT$DIR
-
-	wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
-
-	install
-	temp=$?
-	if [ $temp != 0 ]
-	then
-		return $return_code
-	else
-		return_code=0
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/media.js --xunit=../report/casper-media.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		if [ "$1" = "media" ]
-		then
-			return $return_code
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/page.js --xunit=../report/casper-page.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		if [ "$1" = "page" ]
-		then
-			return $return_code
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/blog.js --xunit=../report/casper-blog.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		if [ "$1" = "blog" ]
-		then
-			return $return_code
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/new-home.js --xunit=../report/casper-new-home.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		if [ "$1" = "new-home" ]
-		then
-			return $return_code
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/page-del.js --xunit=../report/casper-page-del.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		if [ "$1" = "page-del" ]
-		then
-			return $return_code
-		fi
-
-		./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/media-del.js --xunit=../report/casper-media-del.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
-
-		return $return_code
-
-	fi
-}
-
 demo ()
 {
 	cd $ROOT$DIR
@@ -219,22 +79,23 @@ then
 			clone $2
 			exit $?
 		;;
+		"demo")
+			demo
+			exit $?
+		;;
 		"init")
-			init
+			cd $DIR
+			ci/scripts/test.sh run
 			exit $?
 		;;
 		"install")
-			init
-			install  $2
+			cd $DIR
+			ci/scripts/test.sh install $2
 			exit $?
 		;;
 		"run")
-			init
-			run $2
-			exit $?
-		;;
-		"demo")
-			demo
+			cd $DIR
+			ci/scripts/test.sh run $2
 			exit $?
 		;;
 		*)
