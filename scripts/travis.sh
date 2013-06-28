@@ -33,7 +33,7 @@ then
         IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
         export IMAGESHACK_DEVELOPER_KEY
 
-        ci/vendor/imageshack-upload $file
+        ci/vendor/imageshack-upload -i $file
     done
-    exit $?
 fi
+exit $temp
