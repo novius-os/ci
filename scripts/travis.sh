@@ -25,4 +25,15 @@ export DISPLAY=:99.0
 sh -e /etc/init.d/xvfb start
 
 DISPLAY=:99.0 ci/scripts/test.sh run
-exit $?
+temp=$?
+if [ $temp != 0 ]
+then
+    for file in *.png
+    do
+        IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
+        export IMAGESHACK_DEVELOPER_KEY
+
+        ci/vendor/imageshack-upload $file
+    done
+    exit $?
+fi

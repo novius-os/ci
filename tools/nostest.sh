@@ -66,7 +66,7 @@ demo ()
 {
 	cd $ROOT$DIR
 
-	./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/demo.js --xunit=../report/casper-demo.xml --fail-fast --direct --log-level=warning --capture_path=../report/ --includes=./ci/tests/casperjs/pre.js
+	./ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/demo.js --xunit=../report/casper-demo.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js
 	return $?
 }
 
