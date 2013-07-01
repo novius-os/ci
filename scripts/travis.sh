@@ -19,7 +19,7 @@ fi
 echo "Test suite end : $temp"
 if [ $temp != 0  -a "$1" != 'local' ]
 then
-    if [ -d ../screenshot ]
+    if [ -d screenshot ]
     then
         IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
         export IMAGESHACK_DEVELOPER_KEY
