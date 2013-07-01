@@ -37,7 +37,7 @@ clone ()
 	mv ../.idea ./
     if [ -f ../properties ]
     then
-    	cp ../properties $DIR/
+    	cp ../properties $DIR/ci/script/
     fi
 
 	chmod a+w local/config

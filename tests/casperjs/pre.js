@@ -27,6 +27,15 @@ var BASE_URL = casper.cli.get('base_url'),
         return false;
     };
 
+    casper.on('error', function(msg, backtrace) {
+        this.capture(capture_path + test_name + '-error.png', {
+            top: 0,
+            left: 0,
+            width: 1024,
+            height: 768
+        });
+    });
+
     casper.nosError = function nosError(message) {
         this.capture(capture_path + test_name + '-error.png', {
             top: 0,

@@ -1,16 +1,23 @@
-#! /bin/sh
+#!/bin/sh
 
 DB_HOST='localhost'
 DB_NAME='novius_os'
 DB_USER='root'
 DB_PASSWORD=''
 URL='http://novius-os/'
+SCREENSHOT=screenshot/
+REPORT=report
+CASPERJS=ci/vendor/casperjs/bin/casperjs
 
-if [ -f properties ]
+if [ -f ci/scripts/properties ]
 then
     echo "Special properties"
-    source properties
+    . ci/scripts/properties
 fi
+
+DATE=$(date +"%F-%H-%M-%S")
+SCREENSHOTDATE="${SCREENSHOT}${DATE}-"
+CASPER_OPTIONS="--fail-fast --direct --log-level=warning --capture_path=$SCREENSHOTDATE --includes=./ci/tests/casperjs/pre.js --base_url=$URL"
 
 help ()
 {
@@ -34,7 +41,8 @@ init ()
     echo "Instance Novius OS test reset"
 	cd $ROOT
 
-	sudo rm -rf ../report
+	sudo rm -rf $REPORT
+	sudo rm -rf $SCREENSHOT
 	sudo rm -rf local/config/development
 	sudo rm -f local/config/db.config.php
 	sudo rm -f local/config/crypt.config.php
@@ -57,11 +65,12 @@ install ()
     echo "Test install begin"
 	cd $ROOT
 
-	ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='$DB_HOST' --user='$DB_USER' --password='$DB_PASSWORD' --db=$DB_NAME
+	echo $CASPER_OPTIONS
+
+	$CASPERJS test ./ci/tests/casperjs/install.js --xunit=$REPORT/casper-install.xml $CASPER_OPTIONS --host='$DB_HOST' --user='$DB_USER' --password='$DB_PASSWORD' --db=$DB_NAME
 	temp=$?
 	if [ $temp != 0 ]
 	then
-		echo $temp
 		return $temp
 	else
 		if [ "$1" = "wizard" ]
@@ -69,7 +78,7 @@ install ()
 			return $temp
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/appmanager.js --xunit=../report/casper-appmanager.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/appmanager.js --xunit=$REPORT/casper-appmanager.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -89,11 +98,11 @@ run ()
 	temp=$?
 	if [ $temp != 0 ]
 	then
-		return $return_code
+		return $temp
 	else
 		return_code=0
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/media.js --xunit=../report/casper-media.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/media.js --xunit=$REPORT/casper-media.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -105,7 +114,7 @@ run ()
 			return $return_code
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/page.js --xunit=../report/casper-page.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/page.js --xunit=$REPORT/casper-page.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -117,7 +126,7 @@ run ()
 			return $return_code
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/blog.js --xunit=../report/casper-blog.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/blog.js --xunit=$REPORT/casper-blog.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -129,7 +138,7 @@ run ()
 			return $return_code
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/new-home.js --xunit=../report/casper-new-home.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/new-home.js --xunit=$REPORT/casper-new-home.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -141,7 +150,7 @@ run ()
 			return $return_code
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/page-del.js --xunit=../report/casper-page-del.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/page-del.js --xunit=$REPORT/casper-page-del.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
@@ -153,7 +162,7 @@ run ()
 			return $return_code
 		fi
 
-		ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/media-del.js --xunit=../report/casper-media-del.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL
+		$CASPERJS test ./ci/tests/casperjs/media-del.js --xunit=$REPORT/casper-media-del.xml $CASPER_OPTIONS
 		temp=$?
 		if [ $temp != 0 ]
 		then
