@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# This script will generate a novius-os-zip subdirectory
+# It will contains a novius-os.branch.zip
+
 if [ -d 'novius-os-zip' ]
 then
 	echo 'Remove novius-os-zip'

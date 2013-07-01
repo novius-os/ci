@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Execute this script from Novius OS root directory to :
+# - add ci and monkey repos
+# - add github remote on all repos
+
 ROOT=$(pwd)/
 
 declare -A SUBMODULES

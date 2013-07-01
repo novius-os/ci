@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Add this script in your personnal directory
+# Rename it if you want and give it execution right
+# Edit your .bashrc
+# Add this line at the end of file :
+# alias nosgit='~/nosgit.sh'
+# Now, in Novius OS root directory you can use nosgit command for execute git command on all submodules
+
 ROOT=$(pwd)/
 
 declare -A SUBMODULES

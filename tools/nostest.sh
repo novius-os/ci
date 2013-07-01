@@ -1,5 +1,10 @@
 #! /bin/sh
 
+# This script have sub fonction. Just launch it to have help.
+# Whit it, you can, clone a Novius Os, in any branch, in a novius-os-test subdirectory
+# Launch Test suite on it
+# Launch Novius OS demo site test
+
 DIR='novius-os-test'
 
 help ()

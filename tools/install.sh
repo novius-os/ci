@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Script for the Quick Install process
+
 echo -n "Enter the directory name where you want to install Novius OS (default novius-os) :"
 read dir
 echo $dir
