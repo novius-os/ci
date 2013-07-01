@@ -6,9 +6,15 @@ chmod a+w local/config
 chmod a+w local/data/
 chmod a+w local/metadata
 chmod a+w public/
-ln -s ../../novius-os/htdocs public/htdocs/novius-os
+if [ ! -e public/htdocs/novius-os ]
+then
+    ln -s ../../novius-os/htdocs public/htdocs/novius-os
+fi
 chmod a+w public/htdocs/apps
-ln -s ../../novius-os/static public/static/novius-os
+if [ ! -e public/static/novius-os ]
+then
+    ln -s ../../novius-os/static public/static/novius-os
+fi
 chmod a+w public/static/apps
 chmod a+w logs/fuel
 chmod a+w local/cache
