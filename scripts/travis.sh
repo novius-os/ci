@@ -20,12 +20,17 @@ chmod a+w public/cache
 chmod a+w public/cache/media
 chmod a+w public/media
 
-export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
-export DISPLAY=:99.0
-sh -e /etc/init.d/xvfb start
+if [ "$1" = 'local' ]
+then
+    ci/scripts/test.sh run
+else
+    export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
+    export DISPLAY=:99.0
+    sh -e /etc/init.d/xvfb start
 
-DISPLAY=:99.0 ci/scripts/test.sh run
-temp=$?
+    DISPLAY=:99.0 ci/scripts/test.sh run
+    temp=$?
+fi
 if [ $temp != 0 ]
 then
     for file in *.png
