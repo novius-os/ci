@@ -24,7 +24,7 @@ then
         IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
         export IMAGESHACK_DEVELOPER_KEY
 
-        for file in ../screenshot/*
+        for file in screenshot/*
         do
             echo "Send $file to imageshack"
             ci/vendor/imageshack-upload -i "$file"
