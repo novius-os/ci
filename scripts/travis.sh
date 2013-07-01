@@ -20,9 +20,12 @@ chmod a+w public/cache
 chmod a+w public/cache/media
 chmod a+w public/media
 
+echo "Test suite begin"
 if [ "$1" = 'local' ]
 then
+    echo "Test suite local"
     ci/scripts/test.sh run
+    temp=$?
 else
     export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
     export DISPLAY=:99.0
@@ -31,13 +34,15 @@ else
     DISPLAY=:99.0 ci/scripts/test.sh run
     temp=$?
 fi
+echo "Test suite end"
 if [ $temp != 0 ]
 then
+    IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
+    export IMAGESHACK_DEVELOPER_KEY
+
     for file in *.png
     do
-        IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
-        export IMAGESHACK_DEVELOPER_KEY
-
+        echo "Send $file to imageshack"
         ci/vendor/imageshack-upload -i $file
     done
 fi

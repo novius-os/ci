@@ -22,6 +22,7 @@ help ()
 
 db ()
 {
+    echo "Init DB"
 	$(mysql -h $DB_HOST -u $DB_USER --password=$DB_PASSWORD -e "DROP DATABASE IF EXISTS $DB_NAME;CREATE DATABASE $DB_NAME DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;")
 }
 
@@ -29,6 +30,7 @@ init ()
 {
 	db
 
+    echo "Instance Novius OS test reset"
 	cd $ROOT
 
 	sudo rm -rf ../report
@@ -51,6 +53,7 @@ init ()
 
 install ()
 {
+    echo "Test install begin"
 	cd $ROOT
 
 	ci/vendor/casperjs/bin/casperjs test ./ci/tests/casperjs/install.js --xunit=../report/casper-install.xml --fail-fast --direct --log-level=warning --capture_path=../screenshot/ --includes=./ci/tests/casperjs/pre.js --base_url=$URL --host='$DB_HOST' --user='$DB_USER' --password='$DB_PASSWORD' --db=$DB_NAME
@@ -76,6 +79,7 @@ install ()
 
 run ()
 {
+    echo "Test begin"
 	cd $ROOT
 
 	wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
