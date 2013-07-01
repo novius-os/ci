@@ -2,11 +2,6 @@
 
 DIR='novius-os-test'
 
-if [ -f properties ]
-then
-    . properties
-fi
-
 help ()
 {
     echo "Script Novius OS for test suite "
