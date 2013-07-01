@@ -8,6 +8,7 @@ URL='http://novius-os/'
 
 if [ -f properties ]
 then
+    echo "Special properties"
     . properties
 fi
 
