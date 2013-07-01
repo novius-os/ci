@@ -79,7 +79,7 @@ then
 		;;
 		"init")
 			cd $DIR
-			ci/scripts/test.sh run
+			ci/scripts/test.sh init
 			exit $?
 		;;
 		"install")
