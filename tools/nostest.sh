@@ -1,11 +1,6 @@
 #! /bin/sh
 
 DIR='novius-os-test'
-DB_HOST='localhost'
-DB_NAME='novius_os'
-DB_USER='root'
-DB_PASSWORD=''
-URL='http://novius-os/'
 
 if [ -f properties ]
 then
@@ -40,6 +35,10 @@ clone ()
 	sh -c "$CLONE git://github.com/novius-os/ci.git"
 
 	mv ../.idea ./
+    if [ -f ../properties ]
+    then
+    	cp ../properties ci/scripts
+    fi
 
 	chmod a+w local/config
 	chmod a+w local/data/
