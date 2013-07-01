@@ -25,6 +25,12 @@ temp=$?
 echo "Test suite end : $temp"
 if [ $temp != 0  -a "$1" != 'local' ]
 then
+    LOG=logs/fuel/$(date +"%Y")/$(date +"%m")/$(date +"%d").php
+    if [ -f $LOG ]
+    then
+        cat $LOG
+    fi
+
     if [ -d screenshot ]
     then
         IMAGESHACK_DEVELOPER_KEY=8ABCDELQ673cd7e375ad15fa94a10c45b9a699f9
