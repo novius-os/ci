@@ -2,20 +2,26 @@
 
 cd ../../
 
-echo "Test suite begin"
-if [ "$1" = 'local' ]
-then
-    echo "Test suite local"
-    ci/scripts/test.sh run
-    temp=$?
-else
-    export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
-    export DISPLAY=:99.0
-    sh -e /etc/init.d/xvfb start
+run ()
+{
+    if [ "$1" = 'local' ]
+    then
+        echo "Test suite local"
+        ci/scripts/test.sh run
+        return $?
+    else
+        export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
+        export DISPLAY=:99.0
+        sh -e /etc/init.d/xvfb start
 
-    DISPLAY=:99.0 ci/scripts/test.sh run
-    temp=$?
-fi
+        DISPLAY=:99.0 ci/scripts/test.sh run
+        return $?
+    fi
+}
+
+echo "Test suite begin"
+run
+temp=$?
 echo "Test suite end : $temp"
 if [ $temp != 0  -a "$1" != 'local' ]
 then

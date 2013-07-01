@@ -1,0 +1,9 @@
+<VirtualHost *:80>
+    DocumentRoot PATH
+    ServerName novius-os
+    SetEnv NOS_ENV "production"
+    <Directory PATH>
+        AllowOverride All
+        Options FollowSymLinks
+    </Directory>
+</VirtualHost>
