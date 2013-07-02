@@ -37,7 +37,7 @@ clone ()
 	mv ../.idea ./
     if [ -f ../properties ]
     then
-    	cp ../properties $DIR/ci/script/
+    	cp ../properties $DIR/ci/scripts/
     fi
 
 	chmod a+w local/config
@@ -57,8 +57,6 @@ clone ()
 	chmod a+w public/cache
 	chmod a+w public/cache/media
 	chmod a+w public/media
-
-	db
 }
 
 demo ()
