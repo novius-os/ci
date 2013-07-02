@@ -69,8 +69,6 @@ install ()
     echo "Test install begin"
 	cd $ROOT
 
-	echo $CASPER_OPTIONS
-
 	$CASPERJS test ./ci/tests/casperjs/install.js --xunit=$REPORT/casper-install.xml $CASPER_OPTIONS --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASSWORD" --db=$DB_NAME
 
     if [ "$1" = "wizard" ]; then return; fi
