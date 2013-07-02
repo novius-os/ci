@@ -73,7 +73,7 @@ install ()
 
 	$CASPERJS test ./ci/tests/casperjs/install.js --xunit=$REPORT/casper-install.xml $CASPER_OPTIONS --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASSWORD" --db=$DB_NAME
 
-    if [ "$1" = "wizard" ] then return fi
+    if [ "$1" = "wizard" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/appmanager.js --xunit=$REPORT/casper-appmanager.xml $CASPER_OPTIONS
 }
@@ -90,23 +90,23 @@ run ()
 
     $CASPERJS test ./ci/tests/casperjs/media.js --xunit=$REPORT/casper-media.xml $CASPER_OPTIONS
 
-    if [ "$1" = "media" ] then return fi
+    if [ "$1" = "media" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/page.js --xunit=$REPORT/casper-page.xml $CASPER_OPTIONS
 
-    if [ "$1" = "page" ] then return fi
+    if [ "$1" = "page" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/blog.js --xunit=$REPORT/casper-blog.xml $CASPER_OPTIONS
 
-    if [ "$1" = "blog" ] then return fi
+    if [ "$1" = "blog" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/new-home.js --xunit=$REPORT/casper-new-home.xml $CASPER_OPTIONS
 
-    if [ "$1" = "new-home" ] then return fi
+    if [ "$1" = "new-home" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/page-del.js --xunit=$REPORT/casper-page-del.xml $CASPER_OPTIONS
 
-    if [ "$1" = "page-del" ] then return fi
+    if [ "$1" = "page-del" ]; then return; fi
 
     $CASPERJS test ./ci/tests/casperjs/media-del.js --xunit=$REPORT/casper-media-del.xml $CASPER_OPTIONS
 }
