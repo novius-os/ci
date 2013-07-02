@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 DB_HOST='localhost'
 DB_NAME='novius_os'
 DB_USER='root'
@@ -62,116 +64,51 @@ init ()
 
 install ()
 {
+    set -e
+
     echo "Test install begin"
 	cd $ROOT
 
 	echo $CASPER_OPTIONS
 
 	$CASPERJS test ./ci/tests/casperjs/install.js --xunit=$REPORT/casper-install.xml $CASPER_OPTIONS --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASSWORD" --db=$DB_NAME
-	temp=$?
-	if [ $temp != 0 ]
-	then
-		return $temp
-	else
-		if [ "$1" = "wizard" ]
-		then
-			return $temp
-		fi
 
-		$CASPERJS test ./ci/tests/casperjs/appmanager.js --xunit=$REPORT/casper-appmanager.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return $temp
-		fi
-	fi
+    if [ "$1" = "wizard" ] then return fi
+
+    $CASPERJS test ./ci/tests/casperjs/appmanager.js --xunit=$REPORT/casper-appmanager.xml $CASPER_OPTIONS
 }
 
 run ()
 {
+    set -e
     echo "Test begin"
 	cd $ROOT
 
-	wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
-
 	install
-	temp=$?
-	if [ $temp != 0 ]
-	then
-		return $temp
-	else
-		return_code=0
 
-		$CASPERJS test ./ci/tests/casperjs/media.js --xunit=$REPORT/casper-media.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
 
-		if [ "$1" = "media" ]
-		then
-			return $return_code
-		fi
+    $CASPERJS test ./ci/tests/casperjs/media.js --xunit=$REPORT/casper-media.xml $CASPER_OPTIONS
 
-		$CASPERJS test ./ci/tests/casperjs/page.js --xunit=$REPORT/casper-page.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    if [ "$1" = "media" ] then return fi
 
-		if [ "$1" = "page" ]
-		then
-			return $return_code
-		fi
+    $CASPERJS test ./ci/tests/casperjs/page.js --xunit=$REPORT/casper-page.xml $CASPER_OPTIONS
 
-		$CASPERJS test ./ci/tests/casperjs/blog.js --xunit=$REPORT/casper-blog.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    if [ "$1" = "page" ] then return fi
 
-		if [ "$1" = "blog" ]
-		then
-			return $return_code
-		fi
+    $CASPERJS test ./ci/tests/casperjs/blog.js --xunit=$REPORT/casper-blog.xml $CASPER_OPTIONS
 
-		$CASPERJS test ./ci/tests/casperjs/new-home.js --xunit=$REPORT/casper-new-home.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    if [ "$1" = "blog" ] then return fi
 
-		if [ "$1" = "new-home" ]
-		then
-			return $return_code
-		fi
+    $CASPERJS test ./ci/tests/casperjs/new-home.js --xunit=$REPORT/casper-new-home.xml $CASPER_OPTIONS
 
-		$CASPERJS test ./ci/tests/casperjs/page-del.js --xunit=$REPORT/casper-page-del.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    if [ "$1" = "new-home" ] then return fi
 
-		if [ "$1" = "page-del" ]
-		then
-			return $return_code
-		fi
+    $CASPERJS test ./ci/tests/casperjs/page-del.js --xunit=$REPORT/casper-page-del.xml $CASPER_OPTIONS
 
-		$CASPERJS test ./ci/tests/casperjs/media-del.js --xunit=$REPORT/casper-media-del.xml $CASPER_OPTIONS
-		temp=$?
-		if [ $temp != 0 ]
-		then
-			return_code=$temp
-		fi
+    if [ "$1" = "page-del" ] then return fi
 
-		return $return_code
-
-	fi
+    $CASPERJS test ./ci/tests/casperjs/media-del.js --xunit=$REPORT/casper-media-del.xml $CASPER_OPTIONS
 }
 
 ROOT=$(pwd)/
