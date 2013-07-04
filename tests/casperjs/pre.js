@@ -1,6 +1,6 @@
 var BASE_URL = casper.cli.get('base_url'),
     capture_path = casper.cli.get('capture_path') || './',
-    test_name = casper.cli.get(0),
+    test_name = casper.cli.has(0) ? casper.cli.get(0) : 'test',
     utils = require('utils');
 
 (function(casper) {
@@ -45,6 +45,7 @@ var BASE_URL = casper.cli.get('base_url'),
         });
         this.test.fail(message);
         this.test.done();
+        return this;
     };
 
     casper.nosLogin = function nosLogin() {
@@ -59,7 +60,10 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.nosError("Timeout reached. No login form ?");
             });
         });
+        return this;
+    };
 
+    casper.nosAppsTab = function nosAppsTab() {
         this.then(function appstab() {
             this.waitForSelector('.nos-ostabs-appstab a', function() {
                 this.test.assertExists('.nos-ostabs-appstab a', 'Administration loaded');
@@ -68,6 +72,7 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.nosError("Timeout reached. No Apps tab ?");
             });
         });
+        return this;
     };
 
     casper.nosLaunch = function nosLaunch(launcher, title) {
@@ -79,6 +84,7 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.nosError('Timeout reached. No "' + title + '" launcher ?');
             }));
         });
+        return this;
     };
 
     casper.nosAppdeskLoad = function nosAppdeskLoad(title) {
@@ -90,7 +96,11 @@ var BASE_URL = casper.cli.get('base_url'),
             }, function() {
                 this.nosError('Timeout reached. No Appdesk "' + title + '" ?');
             });
+
+            this.waitForText('Loading');
+            this.waitWhileSelector('.wijmo-wijgrid-loadingtext');
         });
+        return this;
     };
 
     casper.nosFormFill = function nosFormFill(title, urlForm, fields) {
@@ -106,12 +116,14 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.nosError('Timeout reached. No "' + title + '" form ?');
             });
         });
+        return this;
     };
 
     casper.nosFormSubmit = function nosFormSubmit() {
         this.then(function formSubmit() {
             this.click(this.nosSelectorCurrentPanel + ' .nos-toolbar .nos-toolbar-left button');
         });
+        return this;
     };
 
     casper.nosFormCheck = function nosFormCheck(title) {
@@ -128,6 +140,7 @@ var BASE_URL = casper.cli.get('base_url'),
         });
 
         this.nosAppdeskCheck(title, true);
+        return this;
     };
 
     casper.nosNotificationOK = function nosNotificationOK(error) {
@@ -137,6 +150,7 @@ var BASE_URL = casper.cli.get('base_url'),
         }, error ? function() {
             this.nosError(error);
         } : null);
+        return this;
     };
 
     casper.nosAppdeskCheck = function nosAppdeskCheck(title, present) {
@@ -161,10 +175,12 @@ var BASE_URL = casper.cli.get('base_url'),
                 this.nosError('Timeout reached. Appdesk not reloaded, "' + title + '" still ' + (present ? 'present' : 'absent') + ' ?');
             });
         });
+        return this;
     };
 
     casper.nosPublish = function nosPublish() {
         this.click(this.nosSelectorCurrentPanel + ' img[src$="static/novius-os/admin/novius-os/img/icons/status-green.png"]');
+        return this;
     };
 
     casper.nosWaitWysiwyg = function nosWaitWysiwyg(then) {
@@ -175,6 +191,7 @@ var BASE_URL = casper.cli.get('base_url'),
         }, then, function() {
             this.nosError('Timeout reached. Wysiwyg not initialized ?');
         });
+        return this;
     };
 
     casper.nosAccordionOpen = function nosAccordionOpen(title) {
@@ -183,6 +200,7 @@ var BASE_URL = casper.cli.get('base_url'),
                 return $.trim($(this).text()) == title;
             }).click();
         }, this.nosSelectorCurrentPanel, title);
+        return this;
     };
 
     casper.start();

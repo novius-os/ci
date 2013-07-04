@@ -35,29 +35,30 @@ var apps = [
         }
     };
 
-casper.nosLogin();
+casper.nosLogin()
+    .nosAppsTab()
 
-casper.then(function launch() {
-    this.waitForSelector('a[data-launcher*=noviusos_appmanager]', (function() {
-        this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Applications manager', 'Have application manager launcher');
-        this.click('a[data-launcher*=noviusos_appmanager]');
-    }), function() {
-        this.nosError('Timeout reached. No Applications manager launcher ?');
+    .then(function launch() {
+        this.waitForSelector('a[data-launcher*=noviusos_appmanager]', (function() {
+            this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Applications manager', 'Have application manager launcher');
+            this.click('a[data-launcher*=noviusos_appmanager]');
+        }), function() {
+            this.nosError('Timeout reached. No Applications manager launcher ?');
+        });
+    })
+
+    .then(function step1() {
+        casper.waitFor(function () {
+            return this.nosTabSelected('Applications manager');
+        }, function() {
+            this.test.assertTitle('Applications manager', 'Applications manager is loaded');
+            app_install();
+        }, function() {
+            this.nosError('Timeout reached. No tab Applications manager ?');
+        });
+    })
+
+    .run(function() {
+        this.test.done();
+        this.test.renderResults(true);
     });
-});
-
-casper.then(function step1() {
-    casper.waitFor(function () {
-        return this.nosTabSelected('Applications manager');
-    }, function() {
-        this.test.assertTitle('Applications manager', 'Applications manager is loaded');
-        app_install();
-    }, function() {
-        this.nosError('Timeout reached. No tab Applications manager ?');
-    });
-});
-
-casper.run(function() {
-    this.test.done();
-    this.test.renderResults(true);
-});

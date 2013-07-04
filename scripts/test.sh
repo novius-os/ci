@@ -86,27 +86,12 @@ run ()
 
     wget http://www.novius-os.org/static/apps/noviusos_templates_basic/img/logo.png -O /tmp/logo-novius-os.png
 
-    $CASPERJS test ./ci/tests/casperjs/media.js --xunit=$REPORT/casper-media.xml $CASPER_OPTIONS
+    if [ -n $1 ]
+    then
+        CASPER_OPTIONS="$CASPER_OPTIONS --nos_step=$1"
+    fi
 
-    if [ "$1" = "media" ]; then return; fi
-
-    $CASPERJS test ./ci/tests/casperjs/page.js --xunit=$REPORT/casper-page.xml $CASPER_OPTIONS
-
-    if [ "$1" = "page" ]; then return; fi
-
-    $CASPERJS test ./ci/tests/casperjs/blog.js --xunit=$REPORT/casper-blog.xml $CASPER_OPTIONS
-
-    if [ "$1" = "blog" ]; then return; fi
-
-    $CASPERJS test ./ci/tests/casperjs/new-home.js --xunit=$REPORT/casper-new-home.xml $CASPER_OPTIONS
-
-    if [ "$1" = "new-home" ]; then return; fi
-
-    $CASPERJS test ./ci/tests/casperjs/page-del.js --xunit=$REPORT/casper-page-del.xml $CASPER_OPTIONS
-
-    if [ "$1" = "page-del" ]; then return; fi
-
-    $CASPERJS test ./ci/tests/casperjs/media-del.js --xunit=$REPORT/casper-media-del.xml $CASPER_OPTIONS
+    $CASPERJS test ./ci/tests/casperjs/scenario.js --xunit=$REPORT/casper-scenario.xml $CASPER_OPTIONS
 }
 
 ROOT=$(pwd)/
