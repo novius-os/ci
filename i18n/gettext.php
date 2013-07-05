@@ -30,13 +30,26 @@ if (is_dir(CWD.'/lang/'.LANG)) {
         $dict_name = substr(str_replace('.lang.php', '.php', str_replace(CWD.'/lang/'.LANG.'/', '', $pathname)), 0, -4);
 
         $dicts[$dict_name] = include $pathname;
-    }
 
-
-    // Keep a track of all translations and which dictionary they come from
-    foreach ($dicts[$dict_name] as $msgid => $msgstr) {
-        if (empty($all[$msgid])) {
+        // Keep a track of all translations and which dictionary they come from
+        foreach ($dicts[$dict_name] as $msgid => $msgstr) {
+            if (!empty($all[$msgid][0])) {
+                continue;
+            }
             $all[$msgid] = array($msgstr, $dict_name);
+        }
+    }
+}
+
+// Populate translations in-between dictionaries (when a translation is found in A but is empty in B, it's copied)
+foreach ($all as $msgid => $msg) {
+    list($msgstr, ) = $msg;
+    if (empty($msgstr)) {
+        continue;
+    }
+    foreach ($dicts as $dict_name => $msg) {
+        if (isset($msg[$msgid]) && $msg[$msgid] === '') {
+            $dicts[$dict_name][$msgid] = $msgstr;
         }
     }
 }
