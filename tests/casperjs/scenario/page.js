@@ -112,7 +112,7 @@ function run() {
 
         // Valid enhancer popup
         .then(function() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar button', function() {
+            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Blog');
             }, function() {
                 this.nosError('Timeout reached. No popup "Blog" opened ?');
