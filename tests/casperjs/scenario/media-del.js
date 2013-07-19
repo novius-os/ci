@@ -24,12 +24,16 @@ function run() {
         .then(function popupDeletion() {
             this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the media ‘Logo Novius Os’');
+            }, function() {
+                this.nosError('Timeout reached. No popup deletion opened ?');
+            });
+            this.waitForSelector('.ui-dialog button.ui-state-error', function() {
                 this.evaluate(function() {
                     $('.ui-dialog form input.verification').val('1');
                 });
                 this.click('.ui-dialog button.ui-state-error');
             }, function() {
-                this.nosError('Timeout reached. No popup deletion opened ?');
+                this.nosError('Timeout reached. No popup submit in deletion opened ?');
             });
         })
 
