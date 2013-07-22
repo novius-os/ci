@@ -42,15 +42,11 @@ function run() {
 
         // Check deletion popup, and confirm delete
         .then(function popupDeletion() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
-                this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
-            }, function() {
-                this.nosError('Timeout reached. No popup deletion opened ?');
-            });
             this.waitForSelector('.ui-dialog button.ui-state-error', function() {
+                this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
                 this.click('.ui-dialog button.ui-state-error');
             }, function() {
-                this.nosError('Timeout reached. No popup submit in deletion opened ?');
+                this.nosError('Timeout reached. No popup deletion opened ?');
             });
         })
 

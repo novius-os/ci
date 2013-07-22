@@ -111,16 +111,12 @@ function run() {
         })
 
         // Valid enhancer popup
-        .then(function() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
+       .then(function() {
+            this.waitForSelector('.ui-dialog button[type="submit"]', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Blog');
-            }, function() {
-                this.nosError('Timeout reached. No popup "Blog" opened ?');
-            });
-            this.waitForSelector('.ui-dialog button', function() {
                 this.click('.ui-dialog button[type="submit"]');
             }, function() {
-                this.nosError('Timeout reached. No popup submit in deletion opened ?');
+                this.nosError('Timeout reached. No popup "Blog" opened ?');
             });
         })
 
