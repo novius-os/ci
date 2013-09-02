@@ -13,7 +13,11 @@ function run() {
 
         // Click on add a category
         .then(function() {
-            this.clickLabel('Add a category', 'a');
+            this.waitForText('Add a category', function() {
+                this.clickLabel('Add a category', 'a');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a category" ?');
+            });
         })
 
         // Check Add form is opened, fill form
@@ -30,7 +34,11 @@ function run() {
 
         // Click on add a post
         .then(function() {
-            this.clickLabel('Add a post', 'span');
+            this.waitForText('Add a post', function() {
+                this.clickLabel('Add a post', 'span');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a post" ?');
+            });
         })
 
         // Check Add form is opened

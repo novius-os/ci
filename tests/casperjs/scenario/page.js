@@ -14,7 +14,11 @@ function run() {
 
         // Click on add a page
         .then(function() {
-            this.clickLabel('Add a page', 'span');
+            this.waitForText('Add a page', function() {
+                this.clickLabel('Add a page', 'span');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a page" ?');
+            });
         })
 
         // Check Add form is opened
