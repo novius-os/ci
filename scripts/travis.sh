@@ -20,8 +20,18 @@ run ()
 }
 
 echo "Test suite begin"
+if [ "$1" != 'local' ]
+then
+ci/scripts/init.sh
+fi
 run
 temp=$?
+if [ $temp != 0  -a "$1" != 'local' ]
+then
+ci/scripts/init.sh
+run
+temp=$?
+fi
 echo "Test suite end : $temp"
 if [ $temp != 0  -a "$1" != 'local' ]
 then
