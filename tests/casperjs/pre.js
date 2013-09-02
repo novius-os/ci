@@ -17,6 +17,13 @@ var BASE_URL = casper.cli.get('base_url'),
     test_name = test_name.split('/');
     test_name = test_name[test_name.length - 1].replace('.js', '');
 
+    var css = require('./ci/vendor/phantomcss/phantomcss.js');
+
+    css.init({
+        screenshotRoot: './ci/tests/phantomcss/screenshots/' + test_name,
+        failedComparisonsRoot: './ci/tests/phantomcss/failures/' + test_name
+    });
+
     casper.nosSelectorCurrentPanel = '.nos-ostabs-panel:not(.nos-ostabs-hide)';
 
     casper.nosTabSelected = function nosTabSelected(title) {
@@ -52,6 +59,7 @@ var BASE_URL = casper.cli.get('base_url'),
         this.thenOpen(BASE_URL + 'admin/nos/login/reset', function login() {
             this.waitForSelector('#login', function() {
                 this.test.assertExists('#login form', 'Login form is found');
+                css.screenshot('#login', 'login');
                 this.fill('#login form', {
                     email: 'test@test.org',
                     password : 'longpassword'
@@ -67,6 +75,7 @@ var BASE_URL = casper.cli.get('base_url'),
         this.then(function appstab() {
             this.waitForSelector('.nos-ostabs-appstab a', function() {
                 this.test.assertExists('.nos-ostabs-appstab a', 'Administration loaded');
+                css.screenshot('#noviusos', 'appstab');
                 this.click('.nos-ostabs-appstab a');
             }, function() {
                 this.nosError("Timeout reached. No Apps tab ?");
