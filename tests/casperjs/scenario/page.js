@@ -14,7 +14,11 @@ function run() {
 
         // Click on add a page
         .then(function() {
-            this.clickLabel('Add a page', 'span');
+            this.waitForText('Add a page', function() {
+                this.clickLabel('Add a page', 'span');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a page" ?');
+            });
         })
 
         // Check Add form is opened
@@ -111,8 +115,8 @@ function run() {
         })
 
         // Valid enhancer popup
-        .then(function() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
+       .then(function() {
+            this.waitForSelector('.ui-dialog button[type="submit"]', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Blog');
                 this.click('.ui-dialog button[type="submit"]');
             }, function() {

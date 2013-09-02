@@ -22,7 +22,7 @@ function run() {
 
         // Check deletion popup, and confirm delete
         .then(function popupDeletion() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
+            this.waitForSelector('.ui-dialog button.ui-state-error', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the media ‘Logo Novius Os’');
                 this.evaluate(function() {
                     $('.ui-dialog form input.verification').val('1');

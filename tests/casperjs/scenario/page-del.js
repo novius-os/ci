@@ -42,7 +42,7 @@ function run() {
 
         // Check deletion popup, and confirm delete
         .then(function popupDeletion() {
-            this.waitForSelector('.ui-dialog .ui-dialog-titlebar', function() {
+            this.waitForSelector('.ui-dialog button.ui-state-error', function() {
                 this.test.assertSelectorHasText('.ui-dialog .ui-dialog-titlebar', 'Deleting the page');
                 this.click('.ui-dialog button.ui-state-error');
             }, function() {

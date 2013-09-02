@@ -14,7 +14,11 @@ function run() {
 
         // Click on add a folder
         .then(function() {
-            this.clickLabel('Add a folder', 'a')
+            this.waitForText('Add a folder', function() {
+                this.clickLabel('Add a folder', 'a');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a folder" ?');
+            });
         })
 
         // Check Add form is opened
@@ -30,7 +34,11 @@ function run() {
 
         // Click to open context menu on page
         .then(function() {
-            this.clickLabel('Add a media file', 'span');
+            this.waitForText('Add a media file', function() {
+                this.clickLabel('Add a media file', 'span');
+            }, function() {
+                this.nosError('Timeout reached. No "Add a media file" ?');
+            });
         })
 
         // Check Add form is opened
