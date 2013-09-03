@@ -2,7 +2,8 @@
 <ruleset name="NOS">
     <description>Coding standard for Novius-OS</description>
 
-    <exclude-pattern>*/vendor/*</exclude-pattern>
+    <exclude-pattern>vendor/*</exclude-pattern>
+    <exclude-pattern>vendor/**</exclude-pattern>
     <exclude-pattern>fuel-core/*</exclude-pattern>
     <exclude-pattern>packages/*</exclude-pattern>
     <exclude-pattern>static/*</exclude-pattern>
