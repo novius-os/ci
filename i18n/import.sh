@@ -23,7 +23,7 @@ source apps.sh
 
 # Convert exported .po files from Pootle to .php languages files used in Novius OS
 cd $ROOT/import
-php ../convert_po_to_php.php
+php ../convert_po_to_php.php $1
 
 # Delete .po files (only keep .php)
 find . -iname "*.po" -exec rm {} \;
