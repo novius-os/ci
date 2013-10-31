@@ -103,6 +103,13 @@ foreach ($files as $file) {
                 $entry['msgid'] = $entry['msgid'][0];
             }
             $msgid = $entry['msgid'];
+
+            if (isset($entry['reference'])) {
+                foreach ($entry['reference'] as $i => $ref) {
+                    $entry['reference'][$i] = str_replace(CWD.'/', '', $entry['reference'][$i]);
+                }
+            }
+
             if (empty($found[$dict_name][$msgid])) {
                 $found[$dict_name][$msgid] = $entry;
                 $all[$msgid] = $entry;
@@ -112,16 +119,16 @@ foreach ($files as $file) {
                     $reference = isset($found[$dict_name][$msgid]['reference']) ?
                         (array) $found[$dict_name][$msgid]['reference'] :
                         array();
-                    $found[$dict_name][$msgid]['reference'] = $reference + array($entry['reference']);
-                    $all[$msgid]['reference'] = $reference + array($entry['reference']);
+                    $found[$dict_name][$msgid]['reference'] = array_merge($reference, (array) $entry['reference']);
+                    $all[$msgid]['reference'] = array_merge($reference, (array) $entry['reference']);
                 }
 
                 if (isset($entry['ccomment'])) {
                     $ccomment = isset($found[$dict_name][$msgid]['ccomment']) ?
                         (array) $found[$dict_name][$msgid]['ccomment'] :
                         array();
-                    $found[$dict_name][$msgid]['ccomment'] = $ccomment + array($entry['ccomment']);
-                    $all[$msgid]['ccomment'] = $ccomment + array($entry['ccomment']);
+                    $found[$dict_name][$msgid]['ccomment'] = array_merge($ccomment, (array) $entry['ccomment']);
+                    $all[$msgid]['ccomment'] = array_merge($ccomment, (array) $entry['ccomment']);
                 }
             }
         }
