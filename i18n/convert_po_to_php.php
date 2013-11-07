@@ -29,7 +29,7 @@ foreach ($files as $file) {
         // Skip empty msgid (headers)
         if (isset($entry['msgid']) && !empty($entry['msgid'])) {
             if (is_array($entry['msgid'])) {
-                $entry['msgid'] = $entry['msgid'][0];
+                $entry['msgid'] = implode('', $entry['msgid']);
             }
             $msgid = $entry['msgid'];
 

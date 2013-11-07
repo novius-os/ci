@@ -93,10 +93,13 @@ foreach ($files as $file) {
     foreach ($po as $entry) {
         // Skip empty msgid (headers)
         if (isset($entry['msgid']) && !empty($entry['msgid'])) {
-            if (is_array($entry['msgid'])) {
-                $entry['msgid'] = $entry['msgid'][0];
-            }
             $msgid = $entry['msgid'];
+            if (is_array($msgid)) {
+                $msgid = implode('', $msgid);
+            }
+            if (empty($msgid)) {
+                continue;
+            }
 
             if (isset($entry['reference'])) {
                 foreach ($entry['reference'] as $i => $ref) {
@@ -128,7 +131,6 @@ foreach ($files as $file) {
         }
     }
 }
-
 
 // Retrieve metadata translations
 // We translate manually metadata into french, which is the base file where to find metadata strings

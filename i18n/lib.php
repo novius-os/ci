@@ -76,7 +76,7 @@ function sprint_dict_php($dict)
             }
             $out .= "    ),\n\n";
         } else if (!empty($msg['msgid'])) {
-            $msgstr = is_array($msg['msgstr']) ? $msg['msgstr'][0] : $msg['msgstr'];
+            $msgstr = is_array($msg['msgstr']) ? implode('', $msg['msgstr']) : $msg['msgstr'];
             $out .= "    '" . str_replace("'", "\\'", stripslashes($msgid)) . "' => '" . str_replace("'", "\\'", stripslashes($msgstr)) . "',\n\n";
         }
     }
