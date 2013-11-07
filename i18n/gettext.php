@@ -242,14 +242,14 @@ foreach ($found as $dict_name => $messages) {
         return;
     }
 
-    file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', sprint_dict_php($found[$dict_name]));
+    file_put_contents('lang/'.LANG.'/'.$dict_name.'.lang.php', sprint_dict_php($found[$dict_name], LANG));
     $poparser = new PoParser();
     $poparser->set_entries($found[$dict_name]);
     $poparser->write('lang/'.LANG.'/'.$dict_name.'.po');
 }
 
 if (!empty($unused)) {
-    file_put_contents('lang/'.LANG.'/unused.lang.php', sprint_dict_php($unused));
+    file_put_contents('lang/'.LANG.'/unused.lang.php', sprint_dict_php($unused, LANG));
     $poparser = new PoParser();
     $poparser->set_entries($unused);
     $poparser->write('lang/'.LANG.'/unused.po');

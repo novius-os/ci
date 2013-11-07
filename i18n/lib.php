@@ -46,11 +46,11 @@ function dict_stat($messages)
     return $stat;
 }
 
-function sprint_dict_php($dict)
+function sprint_dict_php($dict, $lang)
 {
 
     $stat = dict_stat($dict);
-    $nplural = nplural(LANG);
+    $nplural = nplural($lang);
 
     $out = "<?php\n\n";
     $out .= "// Generated on ".date('d/m/Y H:i:s')."\n\n";

@@ -41,7 +41,8 @@ foreach ($files as $file) {
 echo "\n";
 
 foreach ($found as $dict_name => $messages) {
-    file_put_contents($dict_name.'.lang.php', sprint_dict_php($found[$dict_name]));
+    list($app, $lang) = explode('/', str_replace(CWD.'/', '', $dict_name).'/', 3);
+    file_put_contents($dict_name.'.lang.php', sprint_dict_php($found[$dict_name], $lang));
 }
 
 $dicts = array();
