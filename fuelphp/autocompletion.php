@@ -40,7 +40,6 @@ class File_Handler_Directory extends Fuel\Core\File_Handler_Directory {}
 class File_Handler_File extends Fuel\Core\File_Handler_File {}
 class File_Area extends Fuel\Core\File_Area {}
 class Form_Instance extends Fuel\Core\Form_Instance {}
-abstract class Image_Driver extends Fuel\Core\Image_Driver {}
 class Image_Gd extends Fuel\Core\Image_Gd {}
 class Image_Imagemagick extends Fuel\Core\Image_Imagemagick {}
 class Image_Imagick extends Fuel\Core\Image_Imagick {}
@@ -98,7 +97,6 @@ class Html extends Fuel\Core\Html {}
 abstract class HttpException extends Fuel\Core\HttpException {}
 class HttpNotFoundException extends Fuel\Core\HttpNotFoundException {}
 class HttpServerErrorException extends Fuel\Core\HttpServerErrorException {}
-class Image extends Fuel\Core\Image {}
 class Inflector extends Fuel\Core\Inflector {}
 class Input extends Fuel\Core\Input {}
 class LangException extends Fuel\Core\LangException {}
