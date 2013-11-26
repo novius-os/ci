@@ -14,24 +14,31 @@ var apps = [
     app_install = function() {
         var app = apps[apps_index];
         if (app) {
-            if (app.required) {
-                casper.test.assertSelectorExists('label[data-app*=\'"' + app.name + '"\']', app.title + ' is automatically installed as it is required by other installed applications.');
-            } else {
-                casper.test.assertSelectorHasText('a[data-app*=\'"' + app.name + '"\']', 'Install', app.title + ' is not in available applications.');
-                casper.click('a[data-app*=\'"' + app.name + '"\']');
-
-                casper.then(function step2() {
+            casper.then(function app_install_click() {
+                casper.waitForSelector('[data-app*=\'"' + app.name + '"\']', (function() {
+                    if (app.required) {
+                        this.test.assertSelectorExists('label[data-app*=\'"' + app.name + '"\']', app.title + ' is automatically installed as it is required by other installed applications.');
+                    } else {
+                        this.test.assertSelectorHasText('a[data-app*=\'"' + app.name + '"\']', 'Install', app.title + ' is not in available applications.');
+                        this.click('a[data-app*=\'"' + app.name + '"\']');
+                    }
+                }), (function() {
+                    this.nosError('Timeout reached. No button ' + app.title + ' not found ?');
+                }));
+            });
+            if (!app.required) {
+                casper.then(function app_install_check() {
                     this.waitForSelector('a[data-app*=\'"' + app.name + '"\'] span.ui-icon-arrowthick-1-s', (function() {
                         this.test.assertSelectorHasText('a[data-app*=\'"' + app.name + '"\']', 'Uninstall', app.title + ' installed');
                         this.test.assertSelectorHasText('.nos-notification', 'Great, a new app! Installed and ready to use.');
                         this.click('.nos-notification .ui-icon-close');
-                        apps_index++;
-                        app_install();
                     }), (function() {
-                        this.nosError('Timeout reached. No button ' + app.title + ' Uninstall ?');
+                        this.nosError('Timeout reached. No button Uninstall, ' + app.title + ' not installed ?');
                     }));
                 });
             }
+            apps_index++;
+            app_install();
         }
     };
 
@@ -48,17 +55,18 @@ casper.nosLogin()
     })
 
     .then(function step1() {
-        casper.waitFor(function () {
+        this.waitFor(function () {
             return this.nosTabSelected('Applications manager');
         }, function() {
             this.test.assertTitle('Applications manager', 'Applications manager is loaded');
-            app_install();
         }, function() {
             this.nosError('Timeout reached. No tab Applications manager ?');
         });
-    })
-
-    .run(function() {
-        this.test.done();
-        this.test.renderResults(true);
     });
+
+app_install();
+
+casper.run(function() {
+    this.test.done();
+    this.test.renderResults(true);
+});
