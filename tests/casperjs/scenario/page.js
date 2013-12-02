@@ -101,7 +101,7 @@ function run() {
                     return tinyMCE.get(0).setContent('');
                 });
 
-                this.click(this.nosSelectorCurrentPanel + ' .mceButton.mce_enhancer[title="Applications"]');
+                this.click(this.nosSelectorCurrentPanel + ' .mceButton.mce_nosenhancer[title="Applications"]');
             });
         })
 
