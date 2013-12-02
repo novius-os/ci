@@ -41,6 +41,7 @@ GENERATED_PO=0
 for FILE in $FILES
 do
 	# Replace occurrences of translating functions with native gettext's _() one.
+	perl -pi -e 's/n__\(/ngettext\(/g;; ' $FILE;
 	perl -pi -e 's/\$i18n\(/_\(/g;; ' $FILE;
 	perl -pi -e 's/static::i18n\(/_\(/g;; ' $FILE;
 	perl -pi -e 's/\$this->i18n\(/_\(/g;; ' $FILE;
