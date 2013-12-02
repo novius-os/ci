@@ -119,7 +119,7 @@ function run() {
                 this.test.assertSelectorHasText('#pagename', 'New blog post', 'Title OK');
                 this.test.assertTitle('New test page modified - New blog post', 'Title meta OK');
                 // @Todo : to reactivate
-                //this.test.assertResourceExists('cache/media/new-folder/logo-novius-os/', 'Logo was loaded');
+                this.test.assertResourceExists('cache/media/new-folder/logo-novius-os/', 'Logo was loaded');
                 this.test.assertSelectorHasText('.blognews_tags', 'tag-test', 'Tag OK');
                 this.test.assertSelectorHasText('.blognews_categories', 'New category', 'Category OK');
             }, function() {
