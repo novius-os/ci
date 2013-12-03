@@ -5,7 +5,7 @@ function nplural($lang)
     $nplural = array(
         'fr' => 2,
         'ja' => 1,
-        'ru' => 4,
+        'ru' => 3,
         'ie' => 2,
     );
 
