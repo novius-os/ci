@@ -6,6 +6,7 @@ function nplural($lang)
         'fr' => 2,
         'ja' => 1,
         'ru' => 4,
+        'ie' => 2,
     );
 
     return isset($nplural[$lang]) ? $nplural[$lang] : 2;

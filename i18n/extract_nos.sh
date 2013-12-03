@@ -21,6 +21,8 @@ do
     # Read 'po' dir and generate both .po and .php files into the 'generated' directory
     ./extract_lang.sh $app fr
     ./extract_lang.sh $app ja true
+    ./extract_lang.sh $app ru true
+    ./extract_lang.sh $app ie true
 done
 
 echo ""
