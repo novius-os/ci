@@ -23,6 +23,7 @@ do
     ./extract_lang.sh $app ja true
     ./extract_lang.sh $app ru true
     ./extract_lang.sh $app ie true
+    ./extract_lang.sh $app es true
 done
 
 echo ""
