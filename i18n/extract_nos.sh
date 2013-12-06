@@ -26,6 +26,8 @@ do
     ./extract_lang.sh $app es true
 done
 
+./extract_js.sh
+
 echo ""
 
 # Delete .php files (only keep .po)
@@ -35,4 +37,18 @@ find generated -iname "*.php" -exec rm {} \;
 cd $ROOT
 rm -r po 2> /dev/null
 
+NOS_LANGS=( fr ja ru ie es )
 
+rm -r zip 2> /dev/null
+mkdir zip
+for L in ${NOS_LANGS[@]}; do
+    mkdir zip/$L
+    for app in ${!APPLICATIONS[*]}
+    do
+        mkdir zip/$L/$app
+        cp generated/$app/$L/* zip/$L/$app
+    done
+
+    mkdir zip/$L/tinymce
+    cp generated/tinymce/$L/* zip/$L/tinymce
+done
