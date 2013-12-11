@@ -31,8 +31,12 @@ do
     else
         APP=${file/.js/}
         APP=${APP/.\/tinymce\/$1\//}
-        APP=${APP/_dlg/}
-        cp $ROOT/import/$file $ROOT/import/../../../novius-os/static/admin/vendor/tinymce/plugins/$APP/langs/$1.js
+        if [ $APP != ${APP/_dlg/} ]
+        then
+            APP=${APP/_dlg/}
+            TARGET=$1"_dlg"
+        fi
+        cp $ROOT/import/$file $ROOT/import/../../../novius-os/static/admin/vendor/tinymce/plugins/$APP/langs/$TARGET.js
     fi
     echo "trouvé $file";
 done
