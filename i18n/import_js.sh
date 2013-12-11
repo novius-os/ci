@@ -31,6 +31,7 @@ do
     else
         APP=${file/.js/}
         APP=${APP/.\/tinymce\/$1\//}
+        TARGET=$1
         if [ $APP != ${APP/_dlg/} ]
         then
             APP=${APP/_dlg/}
