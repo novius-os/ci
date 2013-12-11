@@ -18,6 +18,8 @@ fi
 
 ROOT=$(pwd)
 
+./import_js.sh $1
+
 # Load applications
 source apps.sh
 

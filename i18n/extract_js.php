@@ -12,23 +12,6 @@ if (is_dir(TINYMCE.'/plugins')) {
         mkdir(PODIR.'/'.$lang);
     }
 
-    $extract_file = function ($file) {
-        if (!is_file($file)) {
-            return array();
-        }
-        $content = file_get_contents($file);
-        $start = strpos($content, '{');
-        $content = substr($content, $start, strrpos($content, '}') - $start + 1);
-        $return = json_decode($content, true);
-        $error = json_last_error();
-        if ($error) {
-            echo 'error on json decode: '.$error."\n";
-            print_r($content);
-            echo "\n";
-        }
-        return $return;
-    };
-
     $msgformat = function ($str) {
         $str = explode("\n", str_replace("\r", '', $str));
         foreach ($str as $i => $s) {
@@ -56,18 +39,18 @@ if (is_dir(TINYMCE.'/plugins')) {
     foreach ($directory as $fileinfo) {
         if (substr($fileinfo->getFilename(), 0, 3) === 'nos') {
             $path = TINYMCE.'/plugins/'.$fileinfo->getFilename();
-            $en = $extract_file($path.'/langs/en.js');
+            $en = extract_file_js($path.'/langs/en.js');
 
             foreach ($langs as $lang) {
-                $json = $extract_file($path.'/langs/'.$lang.'.js');
+                $json = extract_file_js($path.'/langs/'.$lang.'.js');
                 $write_po($fileinfo->getFilename(), $lang, $en, $json);
             }
 
             if (is_file($path.'/langs/en_dlg.js')) {
-                $en = $extract_file($path.'/langs/en_dlg.js');
+                $en = extract_file_js($path.'/langs/en_dlg.js');
 
                 foreach ($langs as $lang) {
-                    $json = $extract_file($path.'/langs/'.$lang.'_dlg.js');
+                    $json = extract_file_js($path.'/langs/'.$lang.'_dlg.js');
                     $write_po($fileinfo->getFilename().'_dlg', $lang, $en, $json);
                 }
             }
@@ -75,18 +58,18 @@ if (is_dir(TINYMCE.'/plugins')) {
     }
 
     $path = TINYMCE.'/themes/nos/';
-    $en = $extract_file($path.'/langs/en.js');
+    $en = extract_file_js($path.'/langs/en.js');
 
     foreach ($langs as $lang) {
-        $json = $extract_file($path.'/langs/'.$lang.'.js');
+        $json = extract_file_js($path.'/langs/'.$lang.'.js');
         $write_po('theme', $lang, $en, $json);
     }
 
     if (is_file($path.'/langs/en_dlg.js')) {
-        $en = $extract_file($path.'/langs/en_dlg.js');
+        $en = extract_file_js($path.'/langs/en_dlg.js');
 
         foreach ($langs as $lang) {
-            $json = $extract_file($path.'/langs/'.$lang.'_dlg.js');
+            $json = extract_file_js($path.'/langs/'.$lang.'_dlg.js');
             $write_po('theme_dlg', $lang, $en, $json);
         }
     }

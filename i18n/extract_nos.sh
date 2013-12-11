@@ -46,9 +46,11 @@ for L in ${NOS_LANGS[@]}; do
     for app in ${!APPLICATIONS[*]}
     do
         mkdir zip/$L/$app
-        cp generated/$app/$L/* zip/$L/$app
+        mkdir zip/$L/$app/$L
+        cp generated/$app/$L/* zip/$L/$app/$L
     done
 
     mkdir zip/$L/tinymce
-    cp generated/tinymce/$L/* zip/$L/tinymce
+    mkdir zip/$L/tinymce/$L
+    cp generated/tinymce/$L/* zip/$L/tinymce/$L
 done

@@ -83,4 +83,48 @@ function sprint_dict_php($dict, $lang)
     }
     $out .= ");\n";
     return $out;
-};
+}
+
+function extract_file_js($file)
+{
+    if (!is_file($file)) {
+        return array();
+    }
+    $content = file_get_contents($file);
+    $start = strpos($content, '{');
+    $content = substr($content, $start, strrpos($content, '}') - $start + 1);
+    $return = json_decode($content, true);
+    $error = json_last_error();
+    if ($error) {
+        echo 'error on json decode: '.$error."\n";
+        print_r($content);
+        echo "\n";
+    }
+    return $return;
+}
+
+
+function sprint_dict_js($po, $en, $name, $lang)
+{
+    $out = "tinyMCE.addI18n('".$lang.'.'.str_replace('theme', 'advanced', $name)."', ";
+    $json = array();
+    foreach ($en as $key => $value) {
+        $en[$key] =str_replace("\r", '', $value);
+    }
+    foreach ($po as $entry) {
+        // Skip empty msgid (headers)
+        if (isset($entry['msgid']) && !empty($entry['msgid'])) {
+            if (is_array($entry['msgid'])) {
+                $entry['msgid'] = implode('', $entry['msgid']);
+            }
+            $msgid = $entry['msgid'];
+            $msgstr = is_array($entry['msgstr']) ? implode('', $entry['msgstr']) : $entry['msgstr'];
+            $key = array_search($msgid, $en);
+            if ($key) {
+                $json[$key] = $msgstr;
+            }
+        }
+    }
+    $out .= str_replace(array('{', '","', '}'), array("{\n", "\",\n\"", "\n}"), json_encode($json)).");\n";
+    return $out;
+}
