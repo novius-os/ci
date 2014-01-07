@@ -110,7 +110,6 @@ class Num extends Fuel\Core\Num {}
 class PackageNotFoundException extends Fuel\Core\PackageNotFoundException {}
 class Package extends Fuel\Core\Package {}
 class Pagination extends Fuel\Core\Pagination {}
-class Profiler extends Fuel\Core\Profiler {}
 class RedisException extends Fuel\Core\RedisException {}
 class Redis extends Fuel\Core\Redis {}
 class Request extends Fuel\Core\Request {}
