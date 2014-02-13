@@ -1,0 +1,1 @@
+NOS_LANGS=( fr ja ru ie es )

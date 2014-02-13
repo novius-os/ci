@@ -6,7 +6,11 @@ include_once 'lib.php';
 include_once '../vendor/poparser.php';
 
 if (is_dir(TINYMCE.'/plugins')) {
-    $langs = array('fr', 'ja', 'ie', 'ru', 'es');
+    if (!empty($argv[1])) {
+        $langs = explode(',', $argv[1]);
+    } else {
+        $langs = array('fr', 'ja', 'ie', 'ru', 'es');
+    }
 
     foreach ($langs as $lang) {
         mkdir(PODIR.'/'.$lang);

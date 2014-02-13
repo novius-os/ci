@@ -2,6 +2,16 @@
 
 ROOT=$(pwd)
 
+if [ -z "$1" ]
+then
+    source langs.sh
+else
+    NOS_LANGS=( $1 )
+fi
+NOS_LANGS_CONCAT=$(printf ",%s" "${NOS_LANGS[@]}")
+NOS_LANGS_CONCAT=${NOS_LANGS_CONCAT:1}
+
+
 # Load applications
 source apps.sh
 
@@ -19,14 +29,12 @@ do
     ./gettext.sh ../../$path/$app
 
     # Read 'po' dir and generate both .po and .php files into the 'generated' directory
-    ./extract_lang.sh $app fr
-    ./extract_lang.sh $app ja true
-    ./extract_lang.sh $app ru true
-    ./extract_lang.sh $app ie true
-    ./extract_lang.sh $app es true
+    for L in ${NOS_LANGS[@]}; do
+        ./extract_lang.sh $app $L true
+    done
 done
 
-./extract_js.sh
+./extract_js.sh $NOS_LANGS_CONCAT
 
 echo ""
 
@@ -36,8 +44,6 @@ find generated -iname "*.php" -exec rm {} \;
 # Cleanup
 cd $ROOT
 rm -r po 2> /dev/null
-
-NOS_LANGS=( fr ja ru ie es )
 
 rm -r zip 2> /dev/null
 mkdir zip
