@@ -151,7 +151,7 @@ function run() {
 
         // Click to open context menu on page
         .then(function() {
-            this.click(this.nosSelectorCurrentPanel + ' .wijmo-wijsplitter-h-panel2 th span.ui-icon-trash');
+            this.click(this.nosSelectorCurrentPanel + ' .nos-appdesk-hpanel-bottom th span.ui-icon-trash');
         })
 
         // Check deletion popup, and confirm delete
