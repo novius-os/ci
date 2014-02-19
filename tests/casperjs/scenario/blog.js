@@ -123,12 +123,6 @@ function run() {
             }, function() {
                 this.nosError('Timeout reached. Front page "New blog post" not found ?');
             });
-            this.waitForResource(/new-folder\/logo-novius-os/, function() {
-                this.test.assertResourceExists('new-folder\/logo-novius-os', 'Logo was loaded');
-            }, function() {
-                this.debugHTML();
-                this.nosError('Timeout reached. Front page "New blog post" not found ?');
-            });
         })
 
         // Reload back-office
