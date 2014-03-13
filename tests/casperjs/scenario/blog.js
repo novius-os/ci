@@ -3,7 +3,7 @@ function run() {
     casper.then(function() {
             this.echo('Blog tests', 'INFO_BAR');
         })
-        .nosAppsTab()
+        .nosDesktopTab()
 
         // Launch Blog application
         .nosLaunch('noviusos_blog', 'Blog')

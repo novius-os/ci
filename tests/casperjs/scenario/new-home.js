@@ -4,7 +4,7 @@ function run() {
             this.echo('New home tests', 'INFO_BAR');
         })
 
-        .nosAppsTab()
+        .nosDesktopTab()
 
         // Launch Webpages application
         .nosLaunch('noviusos_page', 'Webpages')

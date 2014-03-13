@@ -4,7 +4,7 @@ function run() {
             this.echo('Media delete tests', 'INFO_BAR');
         })
 
-        .nosAppsTab()
+        .nosDesktopTab()
 
         // Launch Media Centre application
         .nosLaunch('noviusos_media', 'Media Centre')

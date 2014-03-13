@@ -43,12 +43,12 @@ var apps = [
     };
 
 casper.nosLogin()
-    .nosAppsTab()
+    .nosDesktopTab()
 
     .then(function launch() {
-        this.waitForSelector('a[data-launcher*=noviusos_appmanager]', (function() {
-            this.test.assertSelectorHasText('a[data-launcher*=noviusos_appmanager]', 'Applications manager', 'Have application manager launcher');
-            this.click('a[data-launcher*=noviusos_appmanager]');
+        this.waitForSelector('a.launcher-noviusos_appmanager', (function() {
+            this.test.assertSelectorHasText('a.launcher-noviusos_appmanager', 'Applications manager', 'Have application manager launcher');
+            this.click('a.launcher-noviusos_appmanager');
         }), function() {
             this.nosError('Timeout reached. No Applications manager launcher ?');
         });

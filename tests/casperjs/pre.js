@@ -63,11 +63,11 @@ var BASE_URL = casper.cli.get('base_url'),
         return this;
     };
 
-    casper.nosAppsTab = function nosAppsTab() {
-        this.then(function appstab() {
-            this.waitForSelector('.nos-ostabs-appstab a', function() {
-                this.test.assertExists('.nos-ostabs-appstab a', 'Administration loaded');
-                this.click('.nos-ostabs-appstab a');
+    casper.nosDesktopTab = function nosDesktopTab() {
+        this.then(function desktoptab() {
+            this.waitForSelector('.nos-ostabs-desktoptab a', function() {
+                this.test.assertExists('.nos-ostabs-desktoptab a', 'Administration loaded');
+                this.click('.nos-ostabs-desktoptab a');
             }, function() {
                 this.nosError("Timeout reached. No Apps tab ?");
             });
@@ -77,9 +77,9 @@ var BASE_URL = casper.cli.get('base_url'),
 
     casper.nosLaunch = function nosLaunch(launcher, title) {
         this.then(function launch() {
-            this.waitForSelector('a[data-launcher*=' + launcher + ']', (function() {
-                this.test.assertSelectorHasText('a[data-launcher*=' + launcher + ']', title, 'Have "' + title + '" launcher');
-                this.click('a[data-launcher*=' + launcher + ']');
+            this.waitForSelector('a.launcher-' + launcher, (function() {
+                this.test.assertSelectorHasText('a.launcher-' + launcher, title, 'Have "' + title + '" launcher');
+                this.click('a.launcher-' + launcher);
             }), (function() {
                 this.nosError('Timeout reached. No "' + title + '" launcher ?');
             }));
@@ -133,9 +133,14 @@ var BASE_URL = casper.cli.get('base_url'),
             }, function() {
                 this.test.assertTitle(title, '"' + title + '" is created');
                 this.nosNotificationOK();
-                this.click(this.nosSelectorCurrentPanel + ' .nos-ostabs-actions .nos-ostabs-close');
             }, function() {
                 this.nosError('Timeout reached. "' + title + '" is not created ?');
+            });
+        }).then(function formClose() {
+            this.waitForSelector('.nos-ostabs-selected .nos-ostabs-closetab', function() {
+                this.click('.nos-ostabs-selected .nos-ostabs-closetab');
+            }, function() {
+                this.nosError('Timeout reached. "' + title + '" is not closed ?');
             });
         });
 
