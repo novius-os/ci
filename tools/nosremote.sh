@@ -39,7 +39,7 @@ SUBMODULES['novius-os/noviusos_form']='local/applications/noviusos_form';
 SUBMODULES['novius-os/noviusos_news']='local/applications/noviusos_news';
 SUBMODULES['novius-os/noviusos_slideshow']='local/applications/noviusos_slideshow';
 SUBMODULES['novius-os/noviusos_templates_basic']='local/applications/noviusos_templates_basic';
-SUBMODULES['novius-os/noviusos_templates_basic']='local/applications/noviusos_template_bootstrap';
+SUBMODULES['novius-os/noviusos_template_bootstrap']='local/applications/noviusos_template_bootstrap';
 
 git remote add github git@github.com:novius-os/novius-os.git
 
