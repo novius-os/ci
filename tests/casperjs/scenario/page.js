@@ -69,7 +69,7 @@ function run() {
         .thenOpen(BASE_URL + 'test-url.html?_cache=0', function front() {
             this.waitForText('New test page', function() {
                 this.test.assertHttpStatus(301);
-                this.test.assertSelectorHasText('#menu li a', 'Test menu', 'Title menu OK');
+                this.test.assertSelectorHasText('#list-menu li a', 'Test menu', 'Title menu OK');
                 this.test.assertSelectorHasText('#pagename', 'New test page', 'Title OK');
                 this.test.assertTitle('Test meta', 'Title meta OK');
                 this.test.assertResourceExists('media/new-folder/logo-novius-os.png', 'Logo was loaded');
