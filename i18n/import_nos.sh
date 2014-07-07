@@ -1,8 +1,7 @@
 #!/bin/bash
 
-./import.sh fr
-./import.sh ja
-./import.sh es
-./import.sh ru
-./import.sh ie
+source langs.sh
 
+for L in ${NOS_LANGS[@]}; do
+    ./import.sh $L
+done
