@@ -13,10 +13,11 @@
                 dataType: "jsonp",
                 success: function(returndata) {
                     $.each(returndata.data, function() {
-                        if (!this.fork && this.master_branch) {
+                        console.log(this);
+                        if (!this.fork && this.default_branch) {
                             var $tr = $('<tr></tr>');
                             $('<td></td>').text(this.name).appendTo($tr);
-                            $('<td></td>').text(this.master_branch).appendTo($tr);
+                            $('<td></td>').text(this.default_branch).appendTo($tr);
                             $tr.appendTo($table);
                             console.log(this);
                         }
