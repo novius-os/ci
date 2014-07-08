@@ -65,16 +65,19 @@ done
 #############################
 
 # GIT 1.7.8+
-PRE_COMMIT=$ROOT/.git/modules/novius-os/hooks/pre-commit
+PRE_COMMIT=( $ROOT.git/modules/novius-os/hooks/pre-commit $ROOT.git/modules/local/applications/noviusos_template_bootstrap/hooks/pre-commit )
 
 # GIT 1.7.8-
-#PRE_COMMIT=$ROOT/novius-os/.git/hooks/pre-commit
+#PRE_COMMIT=( )$ROOT/novius-os/.git/hooks/pre-commit )$ROOT/local/applications/noviusos_template_bootstrap/.git/hooks/pre-commit )
 
-echo "#!/bin/bash
+for DEPOT in ${PRE_COMMIT[@]}; do
 
-./hooks/minify.sh
-" > $PRE_COMMIT
+    echo "#!/bin/bash
 
-chmod +x $PRE_COMMIT
+    ./hooks/minify.sh
+    " > $DEPOT
+
+    chmod +x $DEPOT
+done
 
 echo '' # line break
