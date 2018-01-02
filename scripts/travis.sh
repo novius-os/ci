@@ -10,7 +10,13 @@ run ()
         ci/scripts/test.sh run
         return $?
     else
-        export PHANTOMJS_EXECUTABLE='phantomjs --local-to-remote-url-access=yes --ignore-ssl-errors=yes'
+        PHANTOMJS_BIN='phantomjs'
+        if [ -f /usr/local/phantomjs-1.9.8/phantomjs ]; then
+            PHANTOMJS_BIN='/usr/local/phantomjs-1.9.8/phantomjs'
+        fi
+        $PHANTOMJS_BIN --version
+
+        export PHANTOMJS_EXECUTABLE="$PHANTOMJS_BIN --local-to-remote-url-access=yes --ignore-ssl-errors=yes"
         export DISPLAY=:99.0
         sh -e /etc/init.d/xvfb start
 
